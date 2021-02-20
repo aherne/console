@@ -50,7 +50,7 @@ class Table
     
     /**
      * Gets table column lengths
-     * 
+     *
      * @return array
      */
     private function getLengths(): array
@@ -81,7 +81,7 @@ class Table
     
     /**
      * Gets lines to display
-     * 
+     *
      * @param array $lengths
      * @return array
      */

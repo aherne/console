@@ -7,7 +7,7 @@ $failed->setBackgroundColor(Lucinda\Console\BackgroundColor::RED);
 $success = new Lucinda\Console\Text(" PASSED ");
 $success->setBackgroundColor(Lucinda\Console\BackgroundColor::GREEN);
 
-$table = new Lucinda\Console\Table(array_map(function ($column){
+$table = new Lucinda\Console\Table(array_map(function ($column) {
     $text = new Lucinda\Console\Text($column);
     $text->setFontStyle(Lucinda\Console\FontStyle::BOLD);
     return $text;
