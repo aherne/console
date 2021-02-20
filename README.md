@@ -1,2 +1,1 @@
-# console_table
-API able to display tables in unix console
+# Lucinda Console: Drawing Tables in UNIX Console or Windows Command Prompt

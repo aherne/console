@@ -1,0 +1,22 @@
+{
+    "name": "lucinda/console-table",
+    "type": "library",
+    "description": "Lucinda Console Table: API able to draw tables in UNIX consoles or windows command prompt",
+    "keywords": ["unix console","command prompt", "tables"],
+    "license": "MIT",
+    "require": {
+        "php": "^7.1"
+    },
+    "autoload": {
+    	"psr-4": {
+        	"Lucinda\\ConsoleTable\\": "src/"
+    	}
+    },
+    "authors": [
+        {
+            "name": "Lucian Popescu",
+            "email": "lucian.gabriel.popescu@gmail.com",
+            "role": "Developer"
+        }
+    ]
+}
