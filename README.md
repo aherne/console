@@ -24,6 +24,7 @@ $table = new Lucinda\Console\Table(array_map(function ($column){
 }, ["Class", "Status", "Message"]));
 $table->addRow(["Foo\\Bar", $success, "this is good"]);
 $table->addRow(["Foo\\Baz", $failed, "this is bad"]);
+$table->display();
 ```
 
 Usage example for Windows command prompt display:
@@ -32,6 +33,7 @@ Usage example for Windows command prompt display:
 $table = new Lucinda\Console\Table(["Class", "Status", "Message"]);
 $table->addRow(["Foo\\Bar", "PASSED", "this is good"]);
 $table->addRow(["Foo\\Baz", "FAILED", "this is bad"]);
+$table->display();
 ```
 
 No styling is available on Windows command prompt, as you can see, but you may use GIT BASH or any equivalent for a better experience! 
