@@ -1,5 +1,5 @@
 <?php
-namespace Lucinda\ConsoleTable;
+namespace Lucinda\Console;
 
 /**
  * Encapsulates a bash text able to be styled

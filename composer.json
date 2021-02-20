@@ -1,5 +1,5 @@
 {
-    "name": "lucinda/console-table",
+    "name": "lucinda/console",
     "type": "library",
     "description": "Lucinda Console Table: API able to draw tables in UNIX consoles or windows command prompt",
     "keywords": ["unix console","command prompt", "tables"],
@@ -9,7 +9,7 @@
     },
     "autoload": {
     	"psr-4": {
-        	"Lucinda\\ConsoleTable\\": "src/"
+        	"Lucinda\\Console\\": "src/"
     	}
     },
     "authors": [

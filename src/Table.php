@@ -1,5 +1,5 @@
 <?php
-namespace Lucinda\ConsoleTable;
+namespace Lucinda\Console;
 
 /**
  * Encapsulates a table to be displayed in bash console
@@ -13,7 +13,7 @@ class Table
     /**
      * Sets table columns
      *
-     * @param string[] $columns
+     * @param string|Text[] $columns
      * @throws \Exception
      */
     public function __construct(array $columns)
@@ -43,10 +43,25 @@ class Table
      */
     public function display(): void
     {
-        // get column sizes
+        $lengths = $this->getLengths();
+        $lines = $this->getLines($lengths);
+        echo implode("\n", $lines)."\n";
+    }
+    
+    /**
+     * Gets table column lengths
+     * 
+     * @return array
+     */
+    private function getLengths(): array
+    {
         $lengths = [];
         foreach ($this->columns as $i=>$column) {
-            $lengths[$i] = strlen($column);
+            if ($column instanceof Text) {
+                $lengths[$i] = strlen($column->getOriginalValue());
+            } else {
+                $lengths[$i] = strlen($column);
+            }
         }
         foreach ($this->rows as $row) {
             foreach ($row as $i=>$value) {
@@ -61,7 +76,17 @@ class Table
                 }
             }
         }
-        
+        return $lengths;
+    }
+    
+    /**
+     * Gets lines to display
+     * 
+     * @param array $lengths
+     * @return array
+     */
+    private function getLines(array $lengths): array
+    {
         // compiles line character length
         $emptyLineLength = 2+array_sum($lengths)+(3*sizeof($this->columns)-1);
         
@@ -72,9 +97,11 @@ class Table
         // adds columns line
         $line = "| ";
         foreach ($this->columns as $i=>$column) {
-            $text = new Text($column);
-            $text->setFontStyle(FontStyle::BOLD);
-            $line .= $text->getStyledValue().str_repeat(" ", $lengths[$i]-strlen($column))." | ";
+            if ($column instanceof Text) {
+                $line .= $column->getStyledValue().str_repeat(" ", $lengths[$i]-strlen($column->getOriginalValue()))." | ";
+            } else {
+                $line .= $column.str_repeat(" ", $lengths[$i]-strlen($column))." | ";
+            }
         }
         
         $lines[] = $line;
@@ -85,16 +112,15 @@ class Table
             $line = "| ";
             foreach ($row as $i=>$value) {
                 if ($value instanceof Text) {
-                    $line.=$value->getStyledValue().str_repeat(" ", $lengths[$i]-strlen($value->getOriginalValue()))." | ";
+                    $line .= $value->getStyledValue().str_repeat(" ", $lengths[$i]-strlen($value->getOriginalValue()))." | ";
                 } else {
-                    $line.=$value.str_repeat(" ", $lengths[$i]-strlen($value))." | ";
+                    $line .= $value.str_repeat(" ", $lengths[$i]-strlen($value))." | ";
                 }
             }
             $lines[] = $line;
         }
         $lines[] = str_repeat("-", $emptyLineLength);
         
-        // displays lines to console
-        echo implode("\n", $lines)."\n";
+        return $lines;
     }
 }

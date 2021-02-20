@@ -1,5 +1,5 @@
 <?php
-namespace Lucinda\ConsoleTable;
+namespace Lucinda\Console;
 
 /**
  * Enum encapsulating valid foreground colors for bash texts
