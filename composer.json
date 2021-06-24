@@ -9,7 +9,8 @@
     },
     "autoload": {
     	"psr-4": {
-        	"Lucinda\\Console\\": "src/"
+        	"Lucinda\\Console\\": "src/",
+                "Test\\Lucinda\\Console\\": "tests/"
     	}
     },
     "authors": [
