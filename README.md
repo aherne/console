@@ -1,4 +1,4 @@
-# Lucinda Console Table
+# Lucinda Console
 
 This API was created to give an ability of styling console responses of PHP libraries such as unit tests or migrations so they are easy to read and pleasurable to see. It does this via 5 classes, all members of **Lucinda\Console** interface:
 
