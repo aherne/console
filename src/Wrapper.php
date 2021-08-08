@@ -34,7 +34,7 @@ class Wrapper
         foreach ($xml->children() as $child) {
             $tag = $child->getName();
             switch ($tag) {
-                case "span":
+                case "div":
                     $text = $this->parseText($child);
                     $output .= ($text instanceof Text ? $text->toString() : $text)."\n";
                     break;
