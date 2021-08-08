@@ -10,7 +10,7 @@ This API was created to give an ability of styling console responses so they are
     - **[Table](#Table)**: class encapsulating a table, not able to include sub-tables
     - **[OrderedList](#OrderedList)**: class encapsulating an ordered list, able to contain leaves that point to other ordered lists
     - **[UnorderedList](#UnorderedList)**: class encapsulating a unordered list, able to contain leaves that point to other unordered lists
-2. Defining a HTML-like templating engine that points to above structures behind the scenes, helping developers to implement console frontend without programming using following tags:
+2. Defining a HTML-like language engine that points to above structures behind the scenes, helping developers to implement console frontend without programming via following tags:
     - **[&lt;div&gt;](#div-tag)**: same as HTML tag but only supporting *style* attribute. 
     - **[&lt;table&gt;](#table-tag)**: same as HTML tag but with a number of restrictions
     - **[&lt;ol&gt;](#ol-tag)**: same as HTML tag but with a number of differences and restrictions
