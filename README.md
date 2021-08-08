@@ -68,9 +68,10 @@ echo $wrapper->getBody();
 ## Console Templating Language
 
 Console templating language supports a fraction of HTML standard, namely parts that are feasable in styling and formatting console text. Certain elements allow a *style* attribute that supports following CSS directives:
-    - *font-weight*: value must be one of [FontStyle](https://github.com/aherne/console/blob/master/src/FontStyle.php) constant names
-    - *background-color*: value must be one of [BackgroundColor](https://github.com/aherne/console/blob/master/src/BackgroundColor.php) constant names
-    - *color*: value must be one of [ForegroundColor](https://github.com/aherne/console/blob/master/src/ForegroundColor.php) constant names
+
+- *font-weight*: value must be one of [FontStyle](https://github.com/aherne/console/blob/master/src/FontStyle.php) constant names
+- *background-color*: value must be one of [BackgroundColor](https://github.com/aherne/console/blob/master/src/BackgroundColor.php) constant names
+- *color*: value must be one of [ForegroundColor](https://github.com/aherne/console/blob/master/src/ForegroundColor.php) constant names
     
 ### Div Tag
 
@@ -87,7 +88,7 @@ Syntax example:
 
 ### Table Tag
 
-Binding to **[Table](#Table)**, works the same as HTML &lt;table&gt; tag, , with following restrictions:
+Binding to **[Table](#Table)**, works the same as HTML &lt;table&gt; tag with following restrictions:
 
 - must have a &lt;thead&gt; child
 - must have a &lt;tbody&gt; child

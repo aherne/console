@@ -1,4 +1,5 @@
 <?php
+
 require __DIR__ . '/vendor/autoload.php';
 
 $failed = new Lucinda\Console\Text(" FAILED ");
@@ -14,4 +15,4 @@ $table = new Lucinda\Console\Table(array_map(function ($column) {
 }, ["Class", "Status", "Message"]));
 $table->addRow(["Foo\\Bar", $success, "this is good"]);
 $table->addRow(["Foo\\Baz", $failed, "this is bad"]);
-$table->display();
+echo $table->toString()."\n";
