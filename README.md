@@ -15,17 +15,17 @@ This API was created to give an ability of styling console responses so they are
         - *font-weight*: value must be one of [FontStyle](https://github.com/aherne/console_table/blob/master/src/FontStyle.php) constant names
         - *background-color*: value must be one of [BackgroundColor](https://github.com/aherne/console_table/blob/master/src/BackgroundColor.php) constant names
         - *color*: value must be one of [ForegroundColor](https://github.com/aherne/console_table/blob/master/src/ForegroundColor.php) constant names
-    - **[<table>](#table-tag)**: same as HTML tag but with following restrictions:
-        - must have a <thead> child
-        - must have a <tbody> child
-        - any <tr> inside supports no attributes
-        - any <td> inside supports only *style* attribute 
-    - **[<ol>](#ol-tag)**: same as HTML tag but with following differences and restrictions:
-        - can contain a <caption> tag defining what ordered list is about (behaves as <span>). If present it MUST be first child!
-        - must contain <li> subtags supporting only *style* attribute
-        - if <li> branches to another <ol>, latter must be the only child
-    - **[<ul>](#ul-tag)**: same as HTML tag, with equivalent differences and restrictions as <ol>
-    - **[<br>](#br-tag)**: same as HTML tag
+    - **[&lt;table&gt;](#table-tag)**: same as HTML tag but with following restrictions:
+        - must have a &lt;thead&gt; child
+        - must have a &lt;tbody&gt; child
+        - any &lt;tr&gt; inside supports no attributes
+        - any &lt;td&gt; inside supports only *style* attribute 
+    - **[&lt;ol&gt;](#ol-tag)**: same as HTML tag but with following differences and restrictions:
+        - can contain a &lt;caption&gt; tag defining what ordered list is about (behaves as &lt;span&gt;). If present it MUST be first child!
+        - must contain &lt;li&gt; subtags supporting only *style* attribute
+        - if &lt;li&gt; branches to another &lt;ol&gt;, latter must be the only child
+    - **[&lt;ul&gt;](#ul-tag)**: same as HTML tag, with equivalent differences and restrictions as &lt;ol&gt;
+    - **[&lt;br&gt;](#br-tag)**: same as HTML tag
 3. Defining a class able to bind templated text at point #2 with structures at point #3 in order to build the final view:
      - **[Wrapper](#Wrapper)**: class encapsulating a table
 
