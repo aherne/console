@@ -11,7 +11,7 @@ This API was created to give an ability of styling console responses so they are
     - **[OrderedList](#OrderedList)**: class encapsulating an ordered list, able to contain leaves that point to other ordered lists
     - **[UnorderedList](#UnorderedList)**: class encapsulating a unordered list, able to contain leaves that point to other unordered lists
 2. Defining a HTML-like templating engine that points to above structures behind the scenes, helping developers to implement console frontend without programming via following tags:
-    - **[<span>](#span-tag)**: same as HTML tag but only supporting *style* attribute. Latter supports following directives:
+    - **[<span>](#span-tag)**: same as HTML tag but only supporting *style* attribute. Latter supports following CSS directives:
         - *font-weight*: value must be one of [FontStyle](https://github.com/aherne/console_table/blob/master/src/FontStyle.php) constant names
         - *background-color*: value must be one of [BackgroundColor](https://github.com/aherne/console_table/blob/master/src/BackgroundColor.php) constant names
         - *color*: value must be one of [ForegroundColor](https://github.com/aherne/console_table/blob/master/src/ForegroundColor.php) constant names
