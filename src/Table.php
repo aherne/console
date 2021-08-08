@@ -2,14 +2,14 @@
 namespace Lucinda\Console;
 
 /**
- * Encapsulates a table to be displayed in bash console
+ * Encapsulates a table to be displayed in bash console / windows terminal
  */
-class Table
+class Table implements Stringable
 {
     private $columns = [];
     private $rows = [];
     private $colors = [];
-    
+
     /**
      * Sets table columns
      *
@@ -23,7 +23,7 @@ class Table
         }
         $this->columns = $columns;
     }
-    
+
     /**
      * Adds row to table
      *
@@ -37,17 +37,18 @@ class Table
         }
         $this->rows[] = $row;
     }
-    
+
     /**
-     * Displays table on console
+     * {@inheritDoc}
+     * @see \Lucinda\Console\Stringable::toString()
      */
-    public function display(): void
+    public function toString(): string
     {
         $lengths = $this->getLengths();
         $lines = $this->getLines($lengths);
-        echo implode("\n", $lines)."\n";
+        return implode("\n", $lines);
     }
-    
+
     /**
      * Gets table column lengths
      *
@@ -78,7 +79,7 @@ class Table
         }
         return $lengths;
     }
-    
+
     /**
      * Gets lines to display
      *
@@ -89,11 +90,11 @@ class Table
     {
         // compiles line character length
         $emptyLineLength = 2+array_sum($lengths)+(3*sizeof($this->columns)-1);
-        
+
         // adds first line
         $lines = [];
         $lines[] = str_repeat("-", $emptyLineLength);
-        
+
         // adds columns line
         $line = "| ";
         foreach ($this->columns as $i=>$column) {
@@ -103,9 +104,9 @@ class Table
                 $line .= $column.str_repeat(" ", $lengths[$i]-strlen($column))." | ";
             }
         }
-        
+
         $lines[] = $line;
-        
+
         // adds row lines
         foreach ($this->rows as $row) {
             $lines[] = str_repeat("-", $emptyLineLength);
@@ -120,7 +121,7 @@ class Table
             $lines[] = $line;
         }
         $lines[] = str_repeat("-", $emptyLineLength);
-        
+
         return $lines;
     }
 }

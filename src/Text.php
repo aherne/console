@@ -4,13 +4,13 @@ namespace Lucinda\Console;
 /**
  * Encapsulates a bash text able to be styled
  */
-class Text
+class Text implements Stringable
 {
     private $value;
     private $fontStyle;
     private $backgroundColor;
     private $foregroundColor;
-    
+
     /**
      * Sets text to style
      *
@@ -20,7 +20,7 @@ class Text
     {
         $this->value = $value;
     }
-    
+
     /**
      * Sets text style (eg: makes it bold)
      *
@@ -30,7 +30,7 @@ class Text
     {
         $this->fontStyle = $fontStyle;
     }
-    
+
     /**
      * Sets text background color
      *
@@ -40,7 +40,7 @@ class Text
     {
         $this->backgroundColor = $backgroundColor;
     }
-    
+
     /**
      * Sets text foreground color
      *
@@ -50,7 +50,20 @@ class Text
     {
         $this->foregroundColor = $foregroundColor;
     }
-    
+
+    /**
+     * {@inheritDoc}
+     * @see \Lucinda\Console\Stringable::toString()
+     */
+    public function toString(): string
+    {
+        if ($this->fontStyle || $this->backgroundColor || $this->foregroundColor) {
+            return $this->getStyledValue();
+        } else {
+            return $this->getOriginalValue();
+        }
+    }
+
     /**
      * Gets original text
      *
@@ -60,7 +73,7 @@ class Text
     {
         return $this->value;
     }
-    
+
     /**
      * Gets styled text
      *
@@ -68,8 +81,8 @@ class Text
      */
     public function getStyledValue(): string
     {
-        $style = $this->fontStyle?$this->fontStyle:0;
-        $color = $this->backgroundColor?$this->backgroundColor:($this->foregroundColor?$this->foregroundColor:1);
+        $style = $this->fontStyle ? $this->fontStyle : 0;
+        $color = $this->backgroundColor ? $this->backgroundColor : ($this->foregroundColor ? $this->foregroundColor : 1);
         return "\e[".$style.";".$color."m".$this->value."\e[0m";
     }
 }

@@ -1,46 +1,88 @@
 # Lucinda Console
 
-This API was created to give an ability of styling console responses of PHP libraries such as unit tests or migrations so they are easy to read and pleasurable to see. It does this via 5 classes, all members of **Lucinda\Console** interface:
+This API was created to give an ability of styling console responses so they are easy to read and pleasurable to see. It does this in two steps:
 
-- **[BackgroundColor](https://github.com/aherne/console_table/blob/master/src/BackgroundColor.php)**: enum encapsulating background colors a UNIX console text can have 
-- **[ForegroundColor](https://github.com/aherne/console_table/blob/master/src/ForegroundColor.php)**: enum encapsulating foreground colors a UNIX console text can have  
-- **[FontStyle](https://github.com/aherne/console_table/blob/master/src/FontStyle.php)**: enum encapsulating font styles a UNIX console text can have (eg: bold) 
-- **[Text](#Text)**: class able to apply any of above three UNIX styling options to a given text 
-- **[Table](#Table)**: class able to display tables on both UNIX console or WINDOWS command prompt
+1. Defining a platform to create and format texts via following classes:
+    - **[Text](#Text)**: class encapsulating a text, able to be applied any of above three UNIX styling options: 
+        - **[BackgroundColor](https://github.com/aherne/console_table/blob/master/src/BackgroundColor.php)**: enum encapsulating background colors UNIX console texts can have 
+        - **[ForegroundColor](https://github.com/aherne/console_table/blob/master/src/ForegroundColor.php)**: enum encapsulating foreground colors UNIX console texts can have  
+        - **[FontStyle](https://github.com/aherne/console_table/blob/master/src/FontStyle.php)**: enum encapsulating font styles UNIX console texts can have (eg: bold)
+    - **[Table](#Table)**: class encapsulating a table, not able to include sub-tables
+    - **[OrderedList](#OrderedList)**: class encapsulating an ordered list, able to contain leaves that point to other ordered lists
+    - **[UnorderedList](#UnorderedList)**: class encapsulating a unordered list, able to contain leaves that point to other unordered lists
+2. Defining a HTML-like templating engine that points to above structures behind the scenes, helping developers to implement console frontend without programming via following tags:
+    - **[<span>](#span-tag)**: same as HTML tag but only supporting *style* attribute. Latter supports following directives:
+        - *font-weight*: value must be one of [FontStyle](https://github.com/aherne/console_table/blob/master/src/FontStyle.php) constant names
+        - *background-color*: value must be one of [BackgroundColor](https://github.com/aherne/console_table/blob/master/src/BackgroundColor.php) constant names
+        - *color*: value must be one of [ForegroundColor](https://github.com/aherne/console_table/blob/master/src/ForegroundColor.php) constant names
+    - **[<table>](#table-tag)**: same as HTML tag but with following restrictions:
+        - must have a <thead> child
+        - must have a <tbody> child
+        - any <tr> inside supports no attributes
+        - any <td> inside supports only *style* attribute 
+    - **[<ol>](#ol-tag)**: same as HTML tag but with following differences and restrictions:
+        - can contain a <caption> tag defining what ordered list is about (behaves as <span>). If present it MUST be first child!
+        - must contain <li> subtags supporting only *style* attribute
+        - if <li> branches to another <ol>, latter must be the only child
+    - **[<ul>](#ul-tag)**: same as HTML tag, with equivalent differences and restrictions as <ol>
+    - **[<br>](#br-tag)**: same as HTML tag
+3. Defining a class able to bind templated text at point #2 with structures at point #3 in order to build the final view:
+     - **[Wrapper](#Wrapper)**: class encapsulating a table
 
-Usage example for UNIX console display:
+API requires no dependency other than PHP 7.1+ interpreter and SimpleXML extension. All classes inside belong to **Lucinda\Console** interface!
+
+## Example Usage
 
 ```php
-$failed = new Lucinda\Console\Text(" FAILED ");
-$failed->setBackgroundColor(Lucinda\Console\BackgroundColor::RED);
+// defines text to be compiled
+$text = '
+'<span style="font-weight: bold">hello</span>
+    
+<table>
+    <thead>
+        <tr>
+            <td style="background-color: red">Name</td>
+            <td>Value</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="color: green">qqq</td>
+            <td>sss</td>
+        </tr>
+        <tr>
+            <td>ddd</td>
+            <td>fff</td>
+        </tr>
+    </tbody>
+</table>
+    
+<ol>
+    <caption style="color: blue">Is Lucinda a genius?</caption>
+    <li>
+        <ol>
+            <caption>Yes</caption>
+            <li style="background-color: blue">qwerty</li>
+            <li>asdfgh</li>
+        </ol>
+    </li>
+    <li>No</li>
+</ol>
+'
+';
 
-$success = new Lucinda\Console\Text(" PASSED ");
-$success->setBackgroundColor(Lucinda\Console\BackgroundColor::GREEN);
-
-$table = new Lucinda\Console\Table(array_map(function ($column){
-    $text = new Lucinda\Console\Text($column);
-    $text->setFontStyle(Lucinda\Console\FontStyle::BOLD);
-    return $text;
-}, ["Class", "Status", "Message"]));
-$table->addRow(["Foo\\Bar", $success, "this is good"]);
-$table->addRow(["Foo\\Baz", $failed, "this is bad"]);
-$table->display();
+// compiling and outputting results (on windows style attributes will be ignored)
+$wrapper = new Lucinda\Console\Wrapper($text);
+echo $wrapper->getBody();
 ```
 
-Usage example for Windows command prompt display:
+## Templating Language
 
-```php
-$table = new Lucinda\Console\Table(["Class", "Status", "Message"]);
-$table->addRow(["Foo\\Bar", "PASSED", "this is good"]);
-$table->addRow(["Foo\\Baz", "FAILED", "this is bad"]);
-$table->display();
-```
 
-No styling is available on Windows command prompt, as you can see, but you may use GIT BASH or any equivalent for a better experience! 
 
-API has no dependency and only requires PHP 7.1 interpreter. Unit tests are not functionaly possible, but two tests implementing examples above have been included (test-unix.php & test-windows.php).
+## Reference Guide
 
-## Table
+### Table
 
 Class [Lucinda\Console\Table](https://github.com/aherne/console_table/blob/master/src/Table.php) draws a table on a unix console or windows command prompt, defining following public methods:
 
@@ -50,7 +92,7 @@ Class [Lucinda\Console\Table](https://github.com/aherne/console_table/blob/maste
 | addRow | array $row | void | Adds a row to table based on *string* or Lucinda\Console\Text array input |
 | display | void | void | Outputs table on console (or command prompt) |
 
-## Text
+### Text
 
 Class [Lucinda\Console\Text](https://github.com/aherne/console_table/blob/master/src/Text.php) styles a UNIX console text, defining following public methods:
 
