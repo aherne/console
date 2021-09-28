@@ -6,24 +6,34 @@ namespace Lucinda\Console;
  */
 abstract class AbstractList implements Stringable
 {
-    public const INDENT_INCREMENT = 5;
+    const INDENT_INCREMENT = 5;
+    
     protected $indent;
     protected $caption;
     protected $items = [];
 
+    /**
+     * Initializes list by setting optional indentation
+     *
+     * @param int $indent
+     */
+    public function __construct(int $indent = 0)
+    {
+        $this->indent = $indent+self::INDENT_INCREMENT;
+    }
+    
     /**
      * Initializes list by setting textual caption and optional indentation
      *
      * @param string|Text $caption
      * @param int $indent
      */
-    public function __construct($caption=null, int $indent = 0)
+    public function setCaption($caption): void
     {
         if (!($caption===null || $caption instanceof Text || is_string($caption))) {
             throw new Exception("Invalid caption type");
         }
         $this->caption = $caption;
-        $this->indent = $indent+self::INDENT_INCREMENT;
     }
 
     /**
@@ -40,17 +50,28 @@ abstract class AbstractList implements Stringable
     }
 
     /**
-     * Adds sublist to list and returns it to be set
+     * Adds sublist to list
      *
-     * @param string|Text $caption
-     * @return AbstractList
+     * @param AbstractList $list
      */
-    public function addList($caption=null): AbstractList
+    public function addList(AbstractList $list): void
     {
-        $class = get_class($this);
-        $item = new $class($caption, $this->indent);
-        $this->items[] = $item;
-        return $item;
+        $list->indent();
+        $this->items[] = $list;
+    }
+    
+    /**
+     * Indents list further
+     */
+    public function indent(): void
+    {
+        $this->indent += self::INDENT_INCREMENT;
+        // cascade indentation to children
+        foreach($this->items as $item) {
+            if ($item instanceof AbstractList) {
+                $item->indent();
+            }
+        }
     }
 
     /**

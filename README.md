@@ -15,7 +15,10 @@ This API was created to give an ability of styling console responses so they are
     - **[&lt;table&gt;](#table-tag)**: same as HTML tag but with a number of restrictions
     - **[&lt;ol&gt;](#ol-tag)**: same as HTML tag but with a number of differences and restrictions
     - **[&lt;ul&gt;](#ul-tag)**: same as HTML tag, with equivalent differences and restrictions as &lt;ol&gt;
-    - **[&lt;br&gt;](#br-tag)**: same as HTML tag
+    - **[&lt;span&gt;](#span-tag)**: same as HTML tag
+    - **[&lt;u&gt;](#u-tag)**: same as HTML tag
+    - **[&lt;b&gt;](#b-tag)**: same as HTML tag
+    - **[&lt;i&gt;](#i-tag)**: same as HTML tag
 3. Defining a class able to bind templated text at point #2 with structures at point #3 in order to build the final view:
      - **[Wrapper](#Wrapper)**: class encapsulating a table
 
@@ -186,9 +189,10 @@ Abstract class [Lucinda\Console\AbstractList](https://github.com/aherne/console/
 
 | Method | Arguments | Returns | Description |
 | --- | --- | --- | --- |
-| __construct | string\|Text $caption = null | void | Sets optional caption to define what list is about based on *string* or *[Text](#Text)* input |
-| addItem | string\|Text $$item | void | Adds a textual list item based on *string* or *[Text](#Text)* input. |
-| addList | string\|Text $caption = null | [AbstractList](#AbstractList) | Creates a sublist by optional caption to define what list is about based on *string* or *[Text](#Text)* input, adds to parent and returns it |
+| __construct | int $indent = 0 | void | Constructs a list by number of spaces to indent in members (default=5) |
+| setCaption | string\|Text $caption | void | Sets optional caption to define what list is about based on *string* or *[Text](#Text)* input |
+| addItem | string\|Text $item | void | Adds a textual member to list based on *string* or *[Text](#Text)* input. |
+| addList | [AbstractList](#AbstractList) | void | Adds a [AbstractList](#AbstractList) member to list |
 | toString | void | string | Gets final string representation of list to be shown on console/terminal |
 
 and following abstract method children must implement:
