@@ -81,12 +81,12 @@ Console templating language supports a fraction of HTML standard, namely parts t
 Binding to **[Text](#Text)**, works the same as HTML &lt;div&gt; tag with following restrictions:
 
 - only supporting *style* attribute
-- body can only contain plain text
+- body can only contain plain text or/and [&lt;span&gt;](#span-tag), [&lt;u&gt;](#u-tag), [&lt;b&gt;](#b-tag), [&lt;i&gt;](#i-tag) tags
 
 Syntax example:
 
 ```html
-<div style="background-color: red">Hello, world!</div>
+<div style="background-color: red">Hello, <b>world</b>!</div>
 ```
 
 ### Table Tag
@@ -96,7 +96,8 @@ Binding to **[Table](#Table)**, works the same as HTML &lt;table&gt; tag with fo
 - must have a &lt;thead&gt; child
 - must have a &lt;tbody&gt; child
 - any &lt;tr&gt; inside supports no attributes
-- any &lt;td&gt; inside supports only *style* attribute 
+- any &lt;td&gt; inside supports only *style* attribute
+- any &lt;td&gt; body can only contain plain text
 
 Syntax example:
 
@@ -121,9 +122,12 @@ Syntax example:
 
 Binding to **[OrderedList](#OrderedList)**, works the same as HTML &lt;ol&gt; tag with following differences and restrictions:
 
-- can contain a &lt;caption&gt; tag defining what ordered list is about (behaving as **[&lt;div&gt;](#div-tag)**). If present it MUST be first child!
-- must contain &lt;li&gt; subtags supporting only *style* attribute
-- if &lt;li&gt; branches to another &lt;ol&gt;, latter must be the only child
+- can contain a &lt;caption&gt; tag defining what list is about (behaving as **[&lt;div&gt;](#div-tag)**). 
+- if a &lt;caption&gt; is present it MUST be first child!
+- must contain &lt;li&gt; sub-tags supporting only *style* attribute
+- any &lt;li&gt; body can only contain one of below:
+   - plain text or/and [&lt;span&gt;](#span-tag), [&lt;u&gt;](#u-tag), [&lt;b&gt;](#b-tag), [&lt;i&gt;](#i-tag) tags
+   - another &lt;ol&gt;/&lt;ul&gt; tag
 
 Example:
 
@@ -145,9 +149,47 @@ Example:
 
 Binding to **[UnorderedList](#UnorderedList)**, works the same as HTML &lt;ul&gt; tag with equivalent differences and restrictions as **[&lt;ol&gt;](#ol-tag)**.
 
-### Br Tag
+### Span Tag
 
-Works the same as HTML &lt;br&gt.
+Works the same as HTML &lt;span&gt; with following restrictions:
+
+- supports only *style* attribute
+- plain text or/and [&lt;u&gt;](#u-tag), [&lt;b&gt;](#b-tag), [&lt;i&gt;](#i-tag) tags
+- can only occur inside a [&lt;div&gt;](#div-tag) or &lt;caption&gt;
+
+Example:
+
+```html
+<div>Hello, <span style="background-color: BLUE">Lucian</span>!</div>
+```
+
+### B Tag
+
+Works the same as HTML &lt;b&gt;  with same restrictions as [&lt;span&gt;](#span-tag) tag! Equivalent to:
+
+```html
+<span style="font-weight: bold">Lucian</span>
+```
+
+### U Tag
+
+Works the same as HTML &lt;u&gt;  with same restrictions as [&lt;span&gt;](#span-tag) tag! Equivalent to:
+
+```html
+<span style="font-weight: underline">Lucian</span>
+```
+
+^ Note the difference from HTML *text-decoration: underline*
+
+### I Tag
+
+Works the same as HTML &lt;i&gt;  with same restrictions as [&lt;span&gt;](#span-tag) tag!  Equivalent to:
+
+```html
+<span style="font-weight: italic">Lucian</span>
+```
+
+^ Note the difference from HTML *font-style: italic*
 
 ## Reference Guide
 
