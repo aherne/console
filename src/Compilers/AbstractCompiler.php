@@ -49,7 +49,7 @@ abstract class AbstractCompiler
             $name = strtolower($matches[1][$k]);
             $value = strtoupper($matches[2][$k]);
             switch ($name) {
-                case "font-weight":
+                case "font-style":
                     if (defined("\Lucinda\Console\FontStyle::".$value)) {
                         $text->setFontStyle(constant("\Lucinda\Console\FontStyle::".$value));
                     }

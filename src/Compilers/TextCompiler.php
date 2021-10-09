@@ -17,13 +17,13 @@ class TextCompiler extends AbstractCompiler
             $style = "";
             switch($tag) {
                 case "i":
-                    $style = "font-weight:ITALIC";
+                    $style = "font-style:ITALIC";
                     break;
                 case "u":
-                    $style = "font-weight:UNDERLINE";
+                    $style = "font-style:UNDERLINE";
                     break;
                 case "b":
-                    $style = "font-weight:BOLD";
+                    $style = "font-style:BOLD";
                     break;
             }
             

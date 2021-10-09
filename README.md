@@ -29,7 +29,7 @@ API requires no dependency other than PHP 7.1+ interpreter and SimpleXML extensi
 ```php
 // defines text to be compiled
 $text = '
-<div style="font-weight: bold">hello</div>
+<div style="font-style: bold">hello</div>
     
 <table>
     <thead>
@@ -72,7 +72,7 @@ echo $wrapper->getBody();
 
 Console templating language supports a fraction of HTML standard, namely parts that are feasable in styling and formatting console text. Certain elements allow a *style* attribute that supports following CSS directives:
 
-- *font-weight*: value must be one of [FontStyle](https://github.com/aherne/console/blob/master/src/FontStyle.php) constant names
+- *font-style*: value must be one of [FontStyle](https://github.com/aherne/console/blob/master/src/FontStyle.php) constant names
 - *background-color*: value must be one of [BackgroundColor](https://github.com/aherne/console/blob/master/src/BackgroundColor.php) constant names
 - *color*: value must be one of [ForegroundColor](https://github.com/aherne/console/blob/master/src/ForegroundColor.php) constant names
     
@@ -168,7 +168,7 @@ Example:
 Works the same as HTML &lt;b&gt;  with same restrictions as [&lt;span&gt;](#span-tag) tag! Equivalent to:
 
 ```html
-<span style="font-weight: bold">Lucian</span>
+<span style="font-style: bold">Lucian</span>
 ```
 
 ### U Tag
@@ -176,7 +176,7 @@ Works the same as HTML &lt;b&gt;  with same restrictions as [&lt;span&gt;](#span
 Works the same as HTML &lt;u&gt;  with same restrictions as [&lt;span&gt;](#span-tag) tag! Equivalent to:
 
 ```html
-<span style="font-weight: underline">Lucian</span>
+<span style="font-style: underline">Lucian</span>
 ```
 
 ^ Note the difference from HTML *text-decoration: underline*
@@ -186,7 +186,7 @@ Works the same as HTML &lt;u&gt;  with same restrictions as [&lt;span&gt;](#span
 Works the same as HTML &lt;i&gt;  with same restrictions as [&lt;span&gt;](#span-tag) tag!  Equivalent to:
 
 ```html
-<span style="font-weight: italic">Lucian</span>
+<span style="font-style: italic">Lucian</span>
 ```
 
 ^ Note the difference from HTML *font-style: italic*
