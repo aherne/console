@@ -4,9 +4,9 @@ This API was created to give an ability of styling console responses so they are
 
 1. Defining a platform to create and format texts via following classes:
     - **[Text](#Text)**: class encapsulating a text, able to be applied any of above three UNIX styling options: 
-        - **[BackgroundColor](https://github.com/aherne/console/blob/master/src/BackgroundColor.php)**: enum encapsulating background colors UNIX console texts can have 
-        - **[ForegroundColor](https://github.com/aherne/console/blob/master/src/ForegroundColor.php)**: enum encapsulating foreground colors UNIX console texts can have  
-        - **[FontStyle](https://github.com/aherne/console/blob/master/src/FontStyle.php)**: enum encapsulating font styles UNIX console texts can have (eg: bold)
+        - **[BackgroundColor](https://github.com/aherne/console/blob/v2.0/src/BackgroundColor.php)**: enum encapsulating background colors UNIX console texts can have 
+        - **[ForegroundColor](https://github.com/aherne/console/blob/v2.0/src/ForegroundColor.php)**: enum encapsulating foreground colors UNIX console texts can have  
+        - **[FontStyle](https://github.com/aherne/console/blob/v2.0/src/FontStyle.php)**: enum encapsulating font styles UNIX console texts can have (eg: bold)
     - **[Table](#Table)**: class encapsulating a table, not able to include sub-tables
     - **[OrderedList](#OrderedList)**: class encapsulating an ordered list, able to contain leaves that point to other ordered lists
     - **[UnorderedList](#UnorderedList)**: class encapsulating a unordered list, able to contain leaves that point to other unordered lists
@@ -72,9 +72,9 @@ echo $wrapper->getBody();
 
 Console templating language supports a fraction of HTML standard, namely parts that are feasable in styling and formatting console text. Certain elements allow a *style* attribute that supports following CSS directives:
 
-- *font-style*: value must be one of [FontStyle](https://github.com/aherne/console/blob/master/src/FontStyle.php) constant names
-- *background-color*: value must be one of [BackgroundColor](https://github.com/aherne/console/blob/master/src/BackgroundColor.php) constant names
-- *color*: value must be one of [ForegroundColor](https://github.com/aherne/console/blob/master/src/ForegroundColor.php) constant names
+- *font-style*: value must be one of [FontStyle](https://github.com/aherne/console/blob/v2.0/src/FontStyle.php) constant names
+- *background-color*: value must be one of [BackgroundColor](https://github.com/aherne/console/blob/v2.0/src/BackgroundColor.php) constant names
+- *color*: value must be one of [ForegroundColor](https://github.com/aherne/console/blob/v2.0/src/ForegroundColor.php) constant names
     
 ### Div Tag
 
@@ -195,21 +195,21 @@ Works the same as HTML &lt;i&gt;  with same restrictions as [&lt;span&gt;](#span
 
 ### Text
 
-Class [Lucinda\Console\Text](https://github.com/aherne/console/blob/master/src/Text.php) implements [Stringable](https://www.php.net/manual/en/class.stringable.php) and styles a UNIX console text, defining following public methods:
+Class [Lucinda\Console\Text](https://github.com/aherne/console/blob/v2.0/src/Text.php) implements [Stringable](https://www.php.net/manual/en/class.stringable.php) and styles a UNIX console text, defining following public methods:
 
 | Method | Arguments | Returns | Description |
 | --- | --- | --- | --- |
 | __construct | string $text | void | Sets text to style |
-| setFontStyle | [Lucinda\Console\FontStyle](https://github.com/aherne/console/blob/master/src/FontStyle.php) $style | void | Sets text style (eg: makes it bold) from input enum member. |
-| setBackgroundColor | [Lucinda\Console\BackgroundColor](https://github.com/aherne/console/blob/master/src/BackgroundColor.php) $color | void | Sets text background color from input enum member. |
-| setForegroundColor | [Lucinda\Console\ForegroundColor](https://github.com/aherne/console/blob/master/src/ForegroundColor.php) $color | void | Sets text foreground color from input enum member. |
+| setFontStyle | [Lucinda\Console\FontStyle](https://github.com/aherne/console/blob/v2.0/src/FontStyle.php) $style | void | Sets text style (eg: makes it bold) from input enum member. |
+| setBackgroundColor | [Lucinda\Console\BackgroundColor](https://github.com/aherne/console/blob/v2.0/src/BackgroundColor.php) $color | void | Sets text background color from input enum member. |
+| setForegroundColor | [Lucinda\Console\ForegroundColor](https://github.com/aherne/console/blob/v2.0/src/ForegroundColor.php) $color | void | Sets text foreground color from input enum member. |
 | getOriginalValue | void | string | Gets original text before styling |
 | getStyledValue | void | string | Gets final text after styling |
 | toString | void | string | Gets final string representation of text to be shown on console/terminal |
 
 ### Table
 
-Class [Lucinda\Console\Table](https://github.com/aherne/console/blob/master/src/Table.php) implements [Stringable](https://www.php.net/manual/en/class.stringable.php) and creates a table to be displayed on console/terminal, defining following public methods:
+Class [Lucinda\Console\Table](https://github.com/aherne/console/blob/v2.0/src/Table.php) implements [Stringable](https://www.php.net/manual/en/class.stringable.php) and creates a table to be displayed on console/terminal, defining following public methods:
 
 | Method | Arguments | Returns | Description |
 | --- | --- | --- | --- |
@@ -219,7 +219,7 @@ Class [Lucinda\Console\Table](https://github.com/aherne/console/blob/master/src/
 
 ### AbstractList
 
-Abstract class [Lucinda\Console\AbstractList](https://github.com/aherne/console/blob/master/src/AbstractList.php) implements [Stringable](https://www.php.net/manual/en/class.stringable.php) and creates a list to be displayed on console/terminal, defining following public methods:
+Abstract class [Lucinda\Console\AbstractList](https://github.com/aherne/console/blob/v2.0/src/AbstractList.php) implements [Stringable](https://www.php.net/manual/en/class.stringable.php) and creates a list to be displayed on console/terminal, defining following public methods:
 
 | Method | Arguments | Returns | Description |
 | --- | --- | --- | --- |
@@ -237,19 +237,19 @@ and following abstract method children must implement:
 
 ### OrderedList
 
-Class [Lucinda\Console\OrderedList](https://github.com/aherne/console/blob/master/src/OrderedList.php) extends [AbstractList](#AbstractList) and creates an ordered list to be displayed on console/terminal.
+Class [Lucinda\Console\OrderedList](https://github.com/aherne/console/blob/v2.0/src/OrderedList.php) extends [AbstractList](#AbstractList) and creates an ordered list to be displayed on console/terminal.
 
 ### UnorderedList
 
-Class [Lucinda\Console\UnorderedList](https://github.com/aherne/console/blob/master/src/UnorderedList.php) extends [AbstractList](#AbstractList) and creates an uordered list to be displayed on console/terminal.
+Class [Lucinda\Console\UnorderedList](https://github.com/aherne/console/blob/v2.0/src/UnorderedList.php) extends [AbstractList](#AbstractList) and creates an uordered list to be displayed on console/terminal.
 
 ### Wrapper
 
-Class [Lucinda\Console\Wrapper](https://github.com/aherne/console/blob/master/src/Wrapper.php) compiles user-defined text using [Console Templating Language](#console-templating-language) by binding tags inside to their equivalent classes. It defines following public methods:
+Class [Lucinda\Console\Wrapper](https://github.com/aherne/console/blob/v2.0/src/Wrapper.php) compiles user-defined text using [Console Templating Language](#console-templating-language) by binding tags inside to their equivalent classes. It defines following public methods:
 
 | Method | Arguments | Returns | Description |
 | --- | --- | --- | --- |
 | __construct | string $body | void | Takes text received and compiles it |
 | getBody | void | string | Gets compiled body, ready to be displayed on console/terminal |
 
-If compilation fails, a [Lucinda\Console\Exception](https://github.com/aherne/console/blob/master/src/Exception.php) is thrown!
+If compilation fails, a [Lucinda\Console\Exception](https://github.com/aherne/console/blob/v2.0/src/Exception.php) is thrown!
