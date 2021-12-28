@@ -56,12 +56,12 @@ abstract class AbstractCompiler
                     break;
                 case "background-color":
                     if (defined("\Lucinda\Console\BackgroundColor::".$value)) {
-                        $text->setFontStyle(constant("\Lucinda\Console\BackgroundColor::".$value));
+                        $text->setBackgroundColor(constant("\Lucinda\Console\BackgroundColor::".$value));
                     }
                     break;
                 case "color":
                     if (defined("\Lucinda\Console\ForegroundColor::".$value)) {
-                        $text->setFontStyle(constant("\Lucinda\Console\ForegroundColor::".$value));
+                        $text->setForegroundColor(constant("\Lucinda\Console\ForegroundColor::".$value));
                     }
                     break;
                 default:
