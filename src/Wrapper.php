@@ -10,8 +10,8 @@ use Lucinda\Console\Compilers\ListCompiler;
  */
 class Wrapper
 {
-    private $body;
-    private $isWindows;
+    private string $body;
+    private bool $isWindows;
 
     /**
      * Parses pseudo-HTML received, taking into account if platform has styling abilities

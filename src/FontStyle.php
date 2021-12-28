@@ -4,12 +4,12 @@ namespace Lucinda\Console;
 /**
  * Enum encapsulating bash text styles
  */
-interface FontStyle
+enum FontStyle: int
 {
-    public const NORMAL = 0;
-    public const BOLD = 1;
-    public const TRANSPARENT = 2;
-    public const ITALIC = 3;
-    public const UNDERLINE = 4;
-    public const BLINK = 5;
+    case NORMAL = 0;
+    case BOLD = 1;
+    case TRANSPARENT = 2;
+    case ITALIC = 3;
+    case UNDERLINE = 4;
+    case BLINK = 5;
 }

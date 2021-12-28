@@ -4,11 +4,11 @@ namespace Lucinda\Console;
 /**
  * Encapsulates a table to be displayed in bash console / windows terminal
  */
-class Table implements Stringable
+class Table implements \Stringable
 {
-    private $columns = [];
-    private $rows = [];
-    private $colors = [];
+    private array $columns = [];
+    private array $rows = [];
+    private array $colors = [];
 
     /**
      * Sets table columns
@@ -40,9 +40,9 @@ class Table implements Stringable
 
     /**
      * {@inheritDoc}
-     * @see \Lucinda\Console\Stringable::toString()
+     * @see \Stringable::__toString()
      */
-    public function toString(): string
+    public function __toString(): string
     {
         $lengths = $this->getLengths();
         $lines = $this->getLines($lengths);

@@ -4,12 +4,12 @@ namespace Lucinda\Console;
 /**
  * Encapsulates a list of options to be displayed in bash console / windows terminal
  */
-abstract class AbstractList implements Stringable
+abstract class AbstractList implements \Stringable
 {
     const INDENT_INCREMENT = 5;
     
-    protected $indent;
-    protected $caption;
+    protected int $indent;
+    protected string|Text $caption;
     protected $items = [];
 
     /**
@@ -28,11 +28,8 @@ abstract class AbstractList implements Stringable
      * @param string|Text $caption
      * @param int $indent
      */
-    public function setCaption($caption): void
+    public function setCaption(string|Text $caption): void
     {
-        if (!($caption===null || $caption instanceof Text || is_string($caption))) {
-            throw new Exception("Invalid caption type");
-        }
         $this->caption = $caption;
     }
 
@@ -41,11 +38,8 @@ abstract class AbstractList implements Stringable
      *
      * @param string|Text $item
      */
-    public function addItem($item): void
+    public function addItem(string|Text $item): void
     {
-        if (!($item instanceof Text || is_string($item))) {
-            throw new Exception("Invalid item type");
-        }
         $this->items[] = $item;
     }
 
@@ -84,16 +78,16 @@ abstract class AbstractList implements Stringable
 
     /**
      * {@inheritDoc}
-     * @see \Lucinda\Console\Stringable::toString()
+     * @see \Stringable::__toString()
      */
-    public function toString(): string
+    public function __toString(): string
     {
         $output = "";
 
         // add caption
         if ($this->caption) {
             if ($this->caption instanceof Text) {
-                $output .= $this->caption->toString();
+                $output .= $this->caption->__toString();
             } else {
                 $output .= $this->caption;
             }
@@ -104,7 +98,7 @@ abstract class AbstractList implements Stringable
         foreach ($this->items as $i=>$item) {
             $line = str_repeat(" ", $this->indent).$this->formatOptionNumber($i+1)." ";
             if ($item instanceof Stringable) {
-                $line .= $item->toString();
+                $line .= $item->__toString();
             } else {
                 $line .= $item;
             }

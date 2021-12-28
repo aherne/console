@@ -1,6 +1,7 @@
 <?php
 namespace Lucinda\Console\Compilers;
 
+use Lucinda\Console\FontStyle;
 use Lucinda\Console\Text;
 use Lucinda\Console\Exception;
 
@@ -9,8 +10,8 @@ use Lucinda\Console\Exception;
  */
 abstract class AbstractCompiler
 {
-    protected $isWindows;
-    protected $body;
+    protected bool $isWindows;
+    protected string $body;
     
     /**
      * Starts compilation by body to be parsed
@@ -50,18 +51,27 @@ abstract class AbstractCompiler
             $value = strtoupper($matches[2][$k]);
             switch ($name) {
                 case "font-style":
-                    if (defined("\Lucinda\Console\FontStyle::".$value)) {
-                        $text->setFontStyle(constant("\Lucinda\Console\FontStyle::".$value));
+                    $cases = \Lucinda\Console\FontStyle::cases();
+                    foreach ($cases as $case) {
+                        if ($case->name == $value) {
+                            $text->setFontStyle($case);
+                        }
                     }
                     break;
                 case "background-color":
-                    if (defined("\Lucinda\Console\BackgroundColor::".$value)) {
-                        $text->setFontStyle(constant("\Lucinda\Console\BackgroundColor::".$value));
+                    $cases = \Lucinda\Console\BackgroundColor::cases();
+                    foreach ($cases as $case) {
+                        if ($case->name == $value) {
+                            $text->setBackgroundColor($case);
+                        }
                     }
                     break;
                 case "color":
-                    if (defined("\Lucinda\Console\ForegroundColor::".$value)) {
-                        $text->setFontStyle(constant("\Lucinda\Console\ForegroundColor::".$value));
+                    $cases = \Lucinda\Console\ForegroundColor::cases();
+                    foreach ($cases as $case) {
+                        if ($case->name == $value) {
+                            $text->setForegroundColor($case);
+                        }
                     }
                     break;
                 default:

@@ -4,12 +4,12 @@ namespace Lucinda\Console;
 /**
  * Encapsulates a bash text able to be styled
  */
-class Text implements Stringable
+class Text implements \Stringable
 {
-    private $value;
-    private $fontStyle;
-    private $backgroundColor;
-    private $foregroundColor;
+    private string $value;
+    private ?FontStyle $fontStyle = null;
+    private ?BackgroundColor $backgroundColor = null;
+    private ?ForegroundColor $foregroundColor = null;
 
     /**
      * Sets text to style
@@ -26,7 +26,7 @@ class Text implements Stringable
      *
      * @param FontStyle $fontStyle
      */
-    public function setFontStyle(int $fontStyle): void
+    public function setFontStyle(FontStyle $fontStyle): void
     {
         $this->fontStyle = $fontStyle;
     }
@@ -36,7 +36,7 @@ class Text implements Stringable
      *
      * @param BackgroundColor $backgroundColor
      */
-    public function setBackgroundColor(int $backgroundColor): void
+    public function setBackgroundColor(BackgroundColor $backgroundColor): void
     {
         $this->backgroundColor = $backgroundColor;
     }
@@ -46,16 +46,16 @@ class Text implements Stringable
      *
      * @param ForegroundColor $foregroundColor
      */
-    public function setForegroundColor(int $foregroundColor): void
+    public function setForegroundColor(ForegroundColor $foregroundColor): void
     {
         $this->foregroundColor = $foregroundColor;
     }
 
     /**
      * {@inheritDoc}
-     * @see \Lucinda\Console\Stringable::toString()
+     * @see \Stringable::__toString()
      */
-    public function toString(): string
+    public function __toString(): string
     {
         if ($this->fontStyle || $this->backgroundColor || $this->foregroundColor) {
             return $this->getStyledValue();
@@ -81,8 +81,8 @@ class Text implements Stringable
      */
     public function getStyledValue(): string
     {
-        $style = $this->fontStyle ? $this->fontStyle : 0;
-        $color = $this->backgroundColor ? $this->backgroundColor : ($this->foregroundColor ? $this->foregroundColor : 1);
+        $style = $this->fontStyle ? $this->fontStyle->value : 0;
+        $color = $this->backgroundColor ? $this->backgroundColor->value : ($this->foregroundColor ? $this->foregroundColor->value : 1);
         return "\e[".$style.";".$color."m".$this->value."\e[0m";
     }
 }

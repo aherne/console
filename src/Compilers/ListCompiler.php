@@ -11,7 +11,7 @@ use Lucinda\Console\Exception;
  */
 class ListCompiler extends AbstractCompiler
 {
-    private $entries = [];
+    private array $entries = [];
     
     /**
      * {@inheritDoc}
@@ -33,7 +33,7 @@ class ListCompiler extends AbstractCompiler
             return $this->compile($html);
         } else {
             return preg_replace_callback("/~list([0-9]+)~/", function($matches) {
-                return $this->entries[$matches[1]]->toString();
+                return $this->entries[$matches[1]]->__toString();
             }, $html);
         }
     }

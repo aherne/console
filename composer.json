@@ -5,7 +5,7 @@
     "keywords": ["unix console","command prompt", "tables"],
     "license": "MIT",
     "require": {
-        "php": "^7.1"
+        "php": "^8.1"
     },
     "autoload": {
     	"psr-4": {

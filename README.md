@@ -22,7 +22,7 @@ This API was created to give an ability of styling console responses so they are
 3. Defining a class able to bind templated text at point #2 with structures at point #3 in order to build the final view:
      - **[Wrapper](#Wrapper)**: class encapsulating a table
 
-API requires no dependency other than PHP 7.1+ interpreter and SimpleXML extension. All classes inside belong to **Lucinda\Console** interface!
+API requires no dependency other than PHP 8.1+ interpreter and SimpleXML extension. All classes inside belong to **Lucinda\Console** interface!
 
 ## Example Usage
 
@@ -193,17 +193,9 @@ Works the same as HTML &lt;i&gt;  with same restrictions as [&lt;span&gt;](#span
 
 ## Reference Guide
 
-### Stringable
-
-Interface [Lucinda\Console\Stringable](https://github.com/aherne/console/blob/master/src/Stringable.php) defines blueprint of an entity able to be displayed on console/terminal via method:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| toString | void | string | Gets entity string representation to be displayed on console |
-
 ### Text
 
-Class [Lucinda\Console\Text](https://github.com/aherne/console/blob/master/src/Text.php) implements [Stringable](#Stringable) and styles a UNIX console text, defining following public methods:
+Class [Lucinda\Console\Text](https://github.com/aherne/console/blob/master/src/Text.php) implements [Stringable](https://www.php.net/manual/en/class.stringable.php) and styles a UNIX console text, defining following public methods:
 
 | Method | Arguments | Returns | Description |
 | --- | --- | --- | --- |
@@ -217,7 +209,7 @@ Class [Lucinda\Console\Text](https://github.com/aherne/console/blob/master/src/T
 
 ### Table
 
-Class [Lucinda\Console\Table](https://github.com/aherne/console/blob/master/src/Table.php) implements [Stringable](#Stringable) and creates a table to be displayed on console/terminal, defining following public methods:
+Class [Lucinda\Console\Table](https://github.com/aherne/console/blob/master/src/Table.php) implements [Stringable](https://www.php.net/manual/en/class.stringable.php) and creates a table to be displayed on console/terminal, defining following public methods:
 
 | Method | Arguments | Returns | Description |
 | --- | --- | --- | --- |
@@ -227,7 +219,7 @@ Class [Lucinda\Console\Table](https://github.com/aherne/console/blob/master/src/
 
 ### AbstractList
 
-Abstract class [Lucinda\Console\AbstractList](https://github.com/aherne/console/blob/master/src/AbstractList.php) implements [Stringable](#Stringable) and creates a list to be displayed on console/terminal, defining following public methods:
+Abstract class [Lucinda\Console\AbstractList](https://github.com/aherne/console/blob/master/src/AbstractList.php) implements [Stringable](https://www.php.net/manual/en/class.stringable.php) and creates a list to be displayed on console/terminal, defining following public methods:
 
 | Method | Arguments | Returns | Description |
 | --- | --- | --- | --- |

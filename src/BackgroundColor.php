@@ -4,23 +4,23 @@ namespace Lucinda\Console;
 /**
  * Enum encapsulating valid background colors for bash texts
  */
-interface BackgroundColor
+enum BackgroundColor : int
 {
-    public const BLACK = 40;
-    public const RED = 41;
-    public const GREEN = 42;
-    public const ORANGE = 43;
-    public const BLUE = 44;
-    public const MAGENTA = 45;
-    public const CYAN = 46;
-    public const LIGHT_GRAY = 47;
-    public const DEFAULT = 49;
-    public const DARK_GRAY = 100;
-    public const LIGHT_RED = 101;
-    public const LIGHT_GREEN = 102;
-    public const YELLOW = 103;
-    public const LIGHT_BLUE = 104;
-    public const LIGHT_PURPLE = 105;
-    public const TEAL = 106;
-    public const WHITE = 107;
+    case BLACK = 40;
+    case RED = 41;
+    case GREEN = 42;
+    case ORANGE = 43;
+    case BLUE = 44;
+    case MAGENTA = 45;
+    case CYAN = 46;
+    case LIGHT_GRAY = 47;
+    case DEFAULT = 49;
+    case DARK_GRAY = 100;
+    case LIGHT_RED = 101;
+    case LIGHT_GREEN = 102;
+    case YELLOW = 103;
+    case LIGHT_BLUE = 104;
+    case LIGHT_PURPLE = 105;
+    case TEAL = 106;
+    case WHITE = 107;
 }

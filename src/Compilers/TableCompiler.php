@@ -30,7 +30,7 @@ class TableCompiler extends AbstractCompiler
             foreach ($rows as $row) {
                 $table->addRow($row);
             }
-            return $table->toString();
+            return $table->__toString();
         }, $html);
     }
 

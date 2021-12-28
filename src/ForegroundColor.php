@@ -4,15 +4,15 @@ namespace Lucinda\Console;
 /**
  * Enum encapsulating valid foreground colors for bash texts
  */
-interface ForegroundColor
+enum ForegroundColor : int
 {
-    public const BLACK = 30;
-    public const RED = 31;
-    public const GREEN = 32;
-    public const ORANGE = 33;
-    public const BLUE = 34;
-    public const MAGENTA = 35;
-    public const CYAN = 36;
-    public const LIGHT_GRAY = 37;
-    public const DEFAULT = 39;
+    case BLACK = 30;
+    case RED = 31;
+    case GREEN = 32;
+    case ORANGE = 33;
+    case BLUE = 34;
+    case MAGENTA = 35;
+    case CYAN = 36;
+    case LIGHT_GRAY = 37;
+    case DEFAULT = 39;
 }
