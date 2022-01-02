@@ -83,6 +83,10 @@ class Text implements \Stringable
     {
         $style = $this->fontStyle ? $this->fontStyle->value : 0;
         $color = $this->backgroundColor ? $this->backgroundColor->value : ($this->foregroundColor ? $this->foregroundColor->value : 1);
-        return "\e[".$style.";".$color."m".$this->value."\e[0m";
+        if (!$this->fontStyle && !$this->backgroundColor && !$this->foregroundColor) {
+            return $this->value;
+        } else {
+            return "\e[".$style.";".$color."m".$this->value."\e[0m";
+        }
     }
 }
