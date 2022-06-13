@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Console;
 
 /**
@@ -53,6 +54,7 @@ class Text implements \Stringable
 
     /**
      * {@inheritDoc}
+     *
      * @see \Stringable::__toString()
      */
     public function __toString(): string

@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Console;
 
 /**
@@ -6,20 +7,25 @@ namespace Lucinda\Console;
  */
 class Table implements \Stringable
 {
+    /**
+     * @var array<string|Text>
+     */
     private array $columns = [];
+    /**
+     * @var array<array<string|Text>>
+     */
     private array $rows = [];
-    private array $colors = [];
 
     /**
      * Sets table columns
      *
-     * @param string|Text[] $columns
-     * @throws \Exception
+     * @param  array<string|Text> $columns
+     * @throws Exception
      */
     public function __construct(array $columns)
     {
         if (empty($columns)) {
-            throw new \Exception("Columns cannot be empty!");
+            throw new Exception("Columns cannot be empty!");
         }
         $this->columns = $columns;
     }
@@ -27,19 +33,20 @@ class Table implements \Stringable
     /**
      * Adds row to table
      *
-     * @param string|Text[] $row
-     * @throws \Exception
+     * @param  array<string|Text> $row
+     * @throws Exception
      */
     public function addRow(array $row): void
     {
         if (sizeof($row)!=sizeof($this->columns)) {
-            throw new \Exception("Invalid size of rows!");
+            throw new Exception("Invalid size of rows!");
         }
         $this->rows[] = $row;
     }
 
     /**
      * {@inheritDoc}
+     *
      * @see \Stringable::__toString()
      */
     public function __toString(): string
@@ -52,7 +59,7 @@ class Table implements \Stringable
     /**
      * Gets table column lengths
      *
-     * @return array
+     * @return array<int,int>
      */
     private function getLengths(): array
     {
@@ -83,8 +90,8 @@ class Table implements \Stringable
     /**
      * Gets lines to display
      *
-     * @param array $lengths
-     * @return array
+     * @param  array<int,int> $lengths
+     * @return string[]
      */
     private function getLines(array $lengths): array
     {
@@ -99,9 +106,9 @@ class Table implements \Stringable
         $line = "| ";
         foreach ($this->columns as $i=>$column) {
             if ($column instanceof Text) {
-                $line .= $column->getStyledValue().str_repeat(" ", $lengths[$i]-strlen($column->getOriginalValue()))." | ";
+                $line .= $column->getStyledValue().$this->getSeparator($lengths[$i], $column->getOriginalValue());
             } else {
-                $line .= $column.str_repeat(" ", $lengths[$i]-strlen($column))." | ";
+                $line .= $column.$this->getSeparator($lengths[$i], $column);
             }
         }
 
@@ -113,9 +120,9 @@ class Table implements \Stringable
             $line = "| ";
             foreach ($row as $i=>$value) {
                 if ($value instanceof Text) {
-                    $line .= $value->getStyledValue().str_repeat(" ", $lengths[$i]-strlen($value->getOriginalValue()))." | ";
+                    $line .= $value->getStyledValue().$this->getSeparator($lengths[$i], $value->getOriginalValue());
                 } else {
-                    $line .= $value.str_repeat(" ", $lengths[$i]-strlen($value))." | ";
+                    $line .= $value.$this->getSeparator($lengths[$i], $value);
                 }
             }
             $lines[] = $line;
@@ -123,5 +130,17 @@ class Table implements \Stringable
         $lines[] = str_repeat("-", $emptyLineLength);
 
         return $lines;
+    }
+
+    /**
+     * Gets column separator
+     *
+     * @param  int    $lengths
+     * @param  string $value
+     * @return string
+     */
+    private function getSeparator(int $lengths, string $value): string
+    {
+        return str_repeat(" ", $lengths-strlen($value))." | ";
     }
 }

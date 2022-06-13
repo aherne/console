@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Console;
 
 use Lucinda\Console\Compilers\DivCompiler;
@@ -29,19 +30,18 @@ class Wrapper
      * Sets body of text to be displayed
      *
      * @param string $body Body containing pseudo-html
-     * @throws Exception If an error prevents proceding any further
      */
     private function setBody(string $body): void
     {
         $divCompiler = new DivCompiler($body, $this->isWindows);
         $body = $divCompiler->getBody();
-        
+
         $tableCompiler = new TableCompiler($body, $this->isWindows);
         $body = $tableCompiler->getBody();
-        
+
         $listCompiler = new ListCompiler($body, $this->isWindows);
         $body = $listCompiler->getBody();
-        
+
         $this->body = $body;
     }
 

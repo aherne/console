@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Console;
 
 /**
@@ -8,6 +9,7 @@ class OrderedList extends AbstractList
 {
     /**
      * {@inheritDoc}
+     *
      * @see \Lucinda\Console\AbstractList::formatOptionNumber()
      */
     protected function formatOptionNumber(int $optionNumber): string

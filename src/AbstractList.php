@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Console;
 
 /**
@@ -6,10 +7,13 @@ namespace Lucinda\Console;
  */
 abstract class AbstractList implements \Stringable
 {
-    const INDENT_INCREMENT = 5;
-    
+    public const INDENT_INCREMENT = 5;
+
     protected int $indent;
     protected string|Text $caption;
+    /**
+     * @var array<string|\Stringable>
+     */
     protected $items = [];
 
     /**
@@ -21,12 +25,11 @@ abstract class AbstractList implements \Stringable
     {
         $this->indent = $indent+self::INDENT_INCREMENT;
     }
-    
+
     /**
      * Initializes list by setting textual caption and optional indentation
      *
      * @param string|Text $caption
-     * @param int $indent
      */
     public function setCaption(string|Text $caption): void
     {
@@ -53,7 +56,7 @@ abstract class AbstractList implements \Stringable
         $list->indent();
         $this->items[] = $list;
     }
-    
+
     /**
      * Indents list further
      */
@@ -61,7 +64,7 @@ abstract class AbstractList implements \Stringable
     {
         $this->indent += self::INDENT_INCREMENT;
         // cascade indentation to children
-        foreach($this->items as $item) {
+        foreach ($this->items as $item) {
             if ($item instanceof AbstractList) {
                 $item->indent();
             }
@@ -71,13 +74,14 @@ abstract class AbstractList implements \Stringable
     /**
      * Formats list option number for later display
      *
-     * @param int $optionNumber
+     * @param  int $optionNumber
      * @return string
      */
     abstract protected function formatOptionNumber(int $optionNumber): string;
 
     /**
      * {@inheritDoc}
+     *
      * @see \Stringable::__toString()
      */
     public function __toString(): string
@@ -97,7 +101,7 @@ abstract class AbstractList implements \Stringable
         // adds items
         foreach ($this->items as $i=>$item) {
             $line = str_repeat(" ", $this->indent).$this->formatOptionNumber($i+1)." ";
-            if ($item instanceof Stringable) {
+            if ($item instanceof \Stringable) {
                 $line .= $item->__toString();
             } else {
                 $line .= $item;

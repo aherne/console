@@ -1,4 +1,5 @@
 <?php
+
 namespace Lucinda\Console\Compilers;
 
 use Lucinda\Console\AbstractList;
@@ -11,43 +12,59 @@ use Lucinda\Console\Exception;
  */
 class ListCompiler extends AbstractCompiler
 {
+    /**
+     * @var array<int,AbstractList>
+     */
     private array $entries = [];
-    
+
     /**
      * {@inheritDoc}
+     *
      * @see \Lucinda\Console\Compilers\AbstractCompiler::compile()
      */
     protected function compile(string $html): string
     {
-        $html = preg_replace_callback("/<ul>(?!.*<ul>)(.+?)<\/ul>/mis",  function($matches) {
-            $list = new UnorderedList();
-            return $this->parseList($list, $matches[1]);
-        }, $html);
-        
-        $html = preg_replace_callback("/<ol>(?!.*<ol>)(.+?)<\/ol>/mis",  function($matches) {
-            $list = new OrderedList();
-            return $this->parseList($list, $matches[1]);
-        }, $html);
-        
-        if (strpos($html, "</li>")!==false) {
+        $html = preg_replace_callback(
+            "/<ul>(?!.*<ul>)(.+?)<\/ul>/mis",
+            function ($matches) {
+                $list = new UnorderedList();
+                return $this->parseList($list, $matches[1]);
+            },
+            $html
+        );
+
+        $html = preg_replace_callback(
+            "/<ol>(?!.*<ol>)(.+?)<\/ol>/mis",
+            function ($matches) {
+                $list = new OrderedList();
+                return $this->parseList($list, $matches[1]);
+            },
+            $html
+        );
+
+        if (str_contains($html, "</li>")) {
             return $this->compile($html);
         } else {
-            return preg_replace_callback("/~list([0-9]+)~/", function($matches) {
-                return $this->entries[$matches[1]]->__toString();
-            }, $html);
+            return preg_replace_callback(
+                "/~list([0-9]+)~/",
+                function ($matches) {
+                    return $this->entries[(int) $matches[1]]->__toString();
+                },
+                $html
+            );
         }
     }
-    
+
     /**
      * Recursively parses body of <ul>/<ol> tag, returning references to be replaced later
-     * 
-     * @param AbstractList $list
-     * @param string $body
+     *
+     * @param  AbstractList $list
+     * @param  string       $body
      * @throws Exception
      * @return string
      */
     private function parseList(AbstractList $list, string $body): string
-    {       
+    {
         // set caption
         $m1 = [];
         preg_match("/<caption(\s+style\s*=\s*\"([^\"]+)\")?>(.+?)<\/caption>/", $body, $m1);
@@ -56,9 +73,9 @@ class ListCompiler extends AbstractCompiler
             $subbody = $m1[3];
             $subCompiler = new TextCompiler($subbody, $this->isWindows);
             $tmp = $this->getText($subCompiler->getBody(), $style);
-            $list->setCaption($this->isWindows?$tmp->getOriginalValue():$tmp);
+            $list->setCaption($this->isWindows ? $tmp->getOriginalValue() : $tmp);
         }
-        
+
         // set entries
         $m2 = [];
         preg_match_all("/<li(\s+style\s*=\s*\"([^\"]+)\")?>(.+?)<\/li>/mis", $body, $m2);
@@ -75,14 +92,14 @@ class ListCompiler extends AbstractCompiler
                 $subbody = $text;
                 $subCompiler = new TextCompiler($subbody, $this->isWindows);
                 $tmp = $this->getText($subCompiler->getBody(), $m2[2][$i]);
-                $list->addItem($this->isWindows?$tmp->getOriginalValue():$tmp);
+                $list->addItem($this->isWindows ? $tmp->getOriginalValue() : $tmp);
             }
         }
-        
+
         // add to entries
         $id = sizeof($this->entries);
         $this->entries[$id] = $list;
-        
+
         return "~list".$id."~";
     }
 }
