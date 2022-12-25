@@ -16,18 +16,12 @@ class TextCompiler extends AbstractCompiler
     {
         $allowedsubtags = ["span", "i", "u", "b"];
         foreach ($allowedsubtags as $tag) {
-            $style = "";
-            switch ($tag) {
-            case "i":
-                $style = "font-style:ITALIC";
-                break;
-            case "u":
-                $style = "font-style:UNDERLINE";
-                break;
-            case "b":
-                $style = "font-style:BOLD";
-                break;
-            }
+            $style = match ($tag) {
+                "i" => "font-style:ITALIC",
+                "u" => "font-style:UNDERLINE",
+                "b" => "font-style:BOLD",
+                default => ""
+            };
 
             $pattern = "/<".$tag."(\s+style\s*=\s*\"([^\"]+)\")?>(.+?)<\/".$tag.">/";
             $html = preg_replace_callback(

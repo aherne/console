@@ -67,32 +67,32 @@ abstract class AbstractCompiler
     private function applyStyles(Text $text, string $name, string $value): void
     {
         switch ($name) {
-        case "font-style":
-            $cases = \Lucinda\Console\FontStyle::cases();
-            foreach ($cases as $case) {
-                if ($case->name == $value) {
-                    $text->setFontStyle($case);
+            case "font-style":
+                $cases = \Lucinda\Console\FontStyle::cases();
+                foreach ($cases as $case) {
+                    if ($case->name == $value) {
+                        $text->setFontStyle($case);
+                    }
                 }
-            }
-            break;
-        case "background-color":
-            $cases = \Lucinda\Console\BackgroundColor::cases();
-            foreach ($cases as $case) {
-                if ($case->name == $value) {
-                    $text->setBackgroundColor($case);
+                break;
+            case "background-color":
+                $cases = \Lucinda\Console\BackgroundColor::cases();
+                foreach ($cases as $case) {
+                    if ($case->name == $value) {
+                        $text->setBackgroundColor($case);
+                    }
                 }
-            }
-            break;
-        case "color":
-            $cases = \Lucinda\Console\ForegroundColor::cases();
-            foreach ($cases as $case) {
-                if ($case->name == $value) {
-                    $text->setForegroundColor($case);
+                break;
+            case "color":
+                $cases = \Lucinda\Console\ForegroundColor::cases();
+                foreach ($cases as $case) {
+                    if ($case->name == $value) {
+                        $text->setForegroundColor($case);
+                    }
                 }
-            }
-            break;
-        default:
-            throw new Exception("Invalid style: ".$name);
+                break;
+            default:
+                throw new Exception("Invalid style: ".$name);
         }
     }
 
