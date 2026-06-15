@@ -2,7 +2,9 @@
 
 namespace Lucinda\Console\Compilers;
 
+use Lucinda\Console\BackgroundColor;
 use Lucinda\Console\FontStyle;
+use Lucinda\Console\ForegroundColor;
 use Lucinda\Console\Text;
 use Lucinda\Console\Exception;
 
@@ -45,12 +47,17 @@ abstract class AbstractCompiler
     protected function getText(string $body, string $style): Text
     {
         $text = new Text($body);
-        $matches = [];
-        preg_match_all("/([a-zA-Z\-]+)\s*\:\s*([a-zA-Z]+)/", $style, $matches);
-        foreach ($matches[0] as $k=>$v) {
-            $name = strtolower($matches[1][$k]);
-            $value = strtoupper($matches[2][$k]);
-            $this->applyStyles($text, $name, $value);
+        foreach (explode(";", $style) as $declaration) {
+            $declaration = trim($declaration);
+            if ($declaration === "") {
+                continue;
+            }
+
+            if (!preg_match("/^([a-zA-Z-]+)\s*:\s*([a-zA-Z_]+)$/", $declaration, $matches)) {
+                throw new Exception("Invalid style declaration: ".$declaration);
+            }
+
+            $this->applyStyle($text, strtolower($matches[1]), strtoupper($matches[2]));
         }
         return $text;
     }
@@ -64,36 +71,27 @@ abstract class AbstractCompiler
      * @return void
      * @throws Exception
      */
-    private function applyStyles(Text $text, string $name, string $value): void
+    private function applyStyle(Text $text, string $name, string $value): void
     {
-        switch ($name) {
-            case "font-style":
-                $cases = \Lucinda\Console\FontStyle::cases();
-                foreach ($cases as $case) {
-                    if ($case->name == $value) {
-                        $text->setFontStyle($case);
-                    }
-                }
-                break;
-            case "background-color":
-                $cases = \Lucinda\Console\BackgroundColor::cases();
-                foreach ($cases as $case) {
-                    if ($case->name == $value) {
-                        $text->setBackgroundColor($case);
-                    }
-                }
-                break;
-            case "color":
-                $cases = \Lucinda\Console\ForegroundColor::cases();
-                foreach ($cases as $case) {
-                    if ($case->name == $value) {
-                        $text->setForegroundColor($case);
-                    }
-                }
-                break;
-            default:
-                throw new Exception("Invalid style: ".$name);
+        $enum = match ($name) {
+            "font-style" => FontStyle::class,
+            "background-color" => BackgroundColor::class,
+            "color" => ForegroundColor::class,
+            default => throw new Exception("Invalid style: ".$name)
+        };
+
+        foreach ($enum::cases() as $case) {
+            if ($case->name === $value) {
+                match ($name) {
+                    "font-style" => $text->setFontStyle($case),
+                    "background-color" => $text->setBackgroundColor($case),
+                    "color" => $text->setForegroundColor($case)
+                };
+                return;
+            }
         }
+
+        throw new Exception("Invalid value for ".$name.": ".$value);
     }
 
     /**

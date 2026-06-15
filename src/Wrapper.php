@@ -17,13 +17,44 @@ class Wrapper
     /**
      * Parses pseudo-HTML received, taking into account if platform has styling abilities
      *
-     * @param string $body
+     * @param string    $body            Body containing pseudo-html
+     * @param bool|null $supportsStyling Explicit ANSI styling support, or null to detect it
      */
-    public function __construct(string $body)
+    public function __construct(string $body, ?bool $supportsStyling = null)
     {
-        $this->isWindows = stripos(php_uname("s"), "win")!==false;
+        $this->isWindows = !($supportsStyling ?? $this->supportsStyling());
 
         $this->setBody($body);
+    }
+
+    /**
+     * Detects whether standard output supports ANSI styling
+     *
+     * @return bool
+     */
+    private function supportsStyling(): bool
+    {
+        if (getenv("NO_COLOR") !== false || getenv("TERM") === "dumb") {
+            return false;
+        }
+
+        if (!defined("STDOUT")) {
+            return false;
+        }
+
+        $isTerminal = function_exists("stream_isatty")
+            ? stream_isatty(STDOUT)
+            : (function_exists("posix_isatty") && posix_isatty(STDOUT));
+        if (!$isTerminal) {
+            return false;
+        }
+
+        if (PHP_OS_FAMILY === "Windows") {
+            return function_exists("sapi_windows_vt100_support")
+                && sapi_windows_vt100_support(STDOUT);
+        }
+
+        return true;
     }
 
     /**

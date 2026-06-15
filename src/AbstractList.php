@@ -10,7 +10,7 @@ abstract class AbstractList implements \Stringable
     public const INDENT_INCREMENT = 5;
 
     protected int $indent;
-    protected string|Text $caption;
+    protected string|Text|null $caption = null;
     /**
      * @var array<string|\Stringable>
      */

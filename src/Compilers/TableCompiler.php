@@ -62,7 +62,7 @@ class TableCompiler extends AbstractCompiler
             throw new Exception("Table missing thead > tr");
         }
         $matches4 = [];
-        preg_match_all("/<td(\s+style\s*=\s*\"([^\"]+)\")?>(.+?)<\/td>/", $matches3[1], $matches4);
+        preg_match_all("/<td(\s+style\s*=\s*\"([^\"]+)\")?>(.+?)<\/td>/is", $matches3[1], $matches4);
         if (sizeof($matches4[3])<2) {
             throw new Exception("Table must have a minimum of two td");
         }
@@ -98,7 +98,7 @@ class TableCompiler extends AbstractCompiler
         foreach ($matches3[1] as $item) {
             $row = [];
             $matches4 = [];
-            preg_match_all("/<td(\s+style\s*=\s*\"([^\"]+)\")?>(.+?)<\/td>/", $item, $matches4);
+            preg_match_all("/<td(\s+style\s*=\s*\"([^\"]+)\")?>(.+?)<\/td>/is", $item, $matches4);
             if (sizeof($matches4[3])!=sizeof($columns)) {
                 throw new Exception("Row column number doesn't match that in thead");
             }

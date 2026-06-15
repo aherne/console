@@ -24,35 +24,31 @@ class ListCompiler extends AbstractCompiler
      */
     protected function compile(string $html): string
     {
-        $html = preg_replace_callback(
-            "/<ul>(?!.*<ul>)(.+?)<\/ul>/mis",
-            function ($matches) {
-                $list = new UnorderedList();
-                return $this->parseList($list, $matches[1]);
-            },
-            $html
-        );
+        $pattern = '/<(ul|ol)>((?:(?!<(?:ul|ol)>).)*?)<\/\1>/is';
 
-        $html = preg_replace_callback(
-            "/<ol>(?!.*<ol>)(.+?)<\/ol>/mis",
-            function ($matches) {
-                $list = new OrderedList();
-                return $this->parseList($list, $matches[1]);
-            },
-            $html
-        );
-
-        if (str_contains($html, "</li>")) {
-            return $this->compile($html);
-        } else {
-            return preg_replace_callback(
-                "/~list([0-9]+)~/",
+        do {
+            $previous = $html;
+            $html = preg_replace_callback(
+                $pattern,
                 function ($matches) {
-                    return $this->entries[(int) $matches[1]]->__toString();
+                    $list = strtolower($matches[1]) === "ul" ? new UnorderedList() : new OrderedList();
+                    return $this->parseList($list, $matches[2]);
                 },
                 $html
             );
+        } while ($html !== $previous);
+
+        if (preg_match('/<\/?(?:ul|ol|li)\b/i', $html)) {
+            throw new Exception("Invalid or unsupported list markup");
         }
+
+        return preg_replace_callback(
+            "/~list([0-9]+)~/",
+            function ($matches) {
+                return $this->entries[(int) $matches[1]]->__toString();
+            },
+            $html
+        );
     }
 
     /**
@@ -67,7 +63,7 @@ class ListCompiler extends AbstractCompiler
     {
         // set caption
         $m1 = [];
-        preg_match("/<caption(\s+style\s*=\s*\"([^\"]+)\")?>(.+?)<\/caption>/", $body, $m1);
+        preg_match("/<caption(\s+style\s*=\s*\"([^\"]+)\")?>(.+?)<\/caption>/is", $body, $m1);
         if (!empty($m1[3])) {
             $style = $m1[2];
             $subbody = $m1[3];

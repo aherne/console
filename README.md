@@ -22,7 +22,7 @@ This API was created to give an ability of styling console responses so they are
 3. Defining a class able to bind templated text at point #2 with structures at point #3 in order to build the final view:
      - **[Wrapper](#Wrapper)**: class encapsulating a table
 
-API requires no dependency other than PHP 8.1+ interpreter and SimpleXML extension. All classes inside belong to **Lucinda\Console** interface!
+API requires PHP 8.1+ and the Mbstring extension. All classes inside belong to the **Lucinda\Console** namespace.
 
 ## Example Usage
 
@@ -63,9 +63,12 @@ $text = '
 </ol>
 ';
 
-// compiling and outputting results (on windows style attributes will be ignored)
+// Compiles and outputs the result. ANSI support is detected from STDOUT.
 $wrapper = new Lucinda\Console\Wrapper($text);
 echo $wrapper->getBody();
+
+// Detection can be overridden when output is handled by another console layer.
+$wrapper = new Lucinda\Console\Wrapper($text, true);
 ```
 
 ## Console Templating Language
@@ -249,7 +252,7 @@ Class [Lucinda\Console\Wrapper](https://github.com/aherne/console/blob/master/sr
 
 | Method | Arguments | Returns | Description |
 | --- | --- | --- | --- |
-| __construct | string $body | void | Takes text received and compiles it |
+| __construct | string $body, ?bool $supportsStyling = null | void | Takes text received and compiles it. ANSI support can be explicitly enabled or disabled. |
 | getBody | void | string | Gets compiled body, ready to be displayed on console/terminal |
 
 If compilation fails, a [Lucinda\Console\Exception](https://github.com/aherne/console/blob/master/src/Exception.php) is thrown!

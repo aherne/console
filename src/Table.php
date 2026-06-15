@@ -66,20 +66,20 @@ class Table implements \Stringable
         $lengths = [];
         foreach ($this->columns as $i=>$column) {
             if ($column instanceof Text) {
-                $lengths[$i] = strlen($column->getOriginalValue());
+                $lengths[$i] = $this->getDisplayWidth($column->getOriginalValue());
             } else {
-                $lengths[$i] = strlen($column);
+                $lengths[$i] = $this->getDisplayWidth($column);
             }
         }
         foreach ($this->rows as $row) {
             foreach ($row as $i=>$value) {
                 if ($value instanceof Text) {
-                    if (strlen($value->getOriginalValue()) > $lengths[$i]) {
-                        $lengths[$i] = strlen($value->getOriginalValue());
+                    if ($this->getDisplayWidth($value->getOriginalValue()) > $lengths[$i]) {
+                        $lengths[$i] = $this->getDisplayWidth($value->getOriginalValue());
                     }
                 } else {
-                    if (strlen($value) > $lengths[$i]) {
-                        $lengths[$i] = strlen($value);
+                    if ($this->getDisplayWidth($value) > $lengths[$i]) {
+                        $lengths[$i] = $this->getDisplayWidth($value);
                     }
                 }
             }
@@ -141,6 +141,17 @@ class Table implements \Stringable
      */
     private function getSeparator(int $lengths, string $value): string
     {
-        return str_repeat(" ", $lengths-strlen($value))." | ";
+        return str_repeat(" ", $lengths-$this->getDisplayWidth($value))." | ";
+    }
+
+    /**
+     * Gets the number of terminal columns occupied by a value
+     *
+     * @param  string $value
+     * @return int
+     */
+    private function getDisplayWidth(string $value): int
+    {
+        return mb_strwidth($value, "UTF-8");
     }
 }

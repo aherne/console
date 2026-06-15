@@ -83,12 +83,24 @@ class Text implements \Stringable
      */
     public function getStyledValue(): string
     {
-        $style = $this->fontStyle ? $this->fontStyle->value : 0;
-        $color = $this->backgroundColor ? $this->backgroundColor->value : ($this->foregroundColor ? $this->foregroundColor->value : 1);
         if (!$this->fontStyle && !$this->backgroundColor && !$this->foregroundColor) {
             return $this->value;
-        } else {
-            return "\e[".$style.";".$color."m".$this->value."\e[0m";
         }
+
+        $styles = [];
+        if ($this->fontStyle) {
+            $styles[] = $this->fontStyle->value;
+        }
+        if ($this->foregroundColor) {
+            $styles[] = $this->foregroundColor->value;
+        }
+        if ($this->backgroundColor) {
+            $styles[] = $this->backgroundColor->value;
+        }
+
+        $openingSequence = "\e[".implode(";", $styles)."m";
+        $value = str_replace("\e[0m", "\e[0m".$openingSequence, $this->value);
+
+        return $openingSequence.$value."\e[0m";
     }
 }

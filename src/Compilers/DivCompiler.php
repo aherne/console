@@ -15,7 +15,7 @@ class DivCompiler extends AbstractCompiler
     protected function compile(string $html): string
     {
         return preg_replace_callback(
-            "/<div(\s+style\s*=\s*\"([^\"]+)\")?>(.+?)<\/div>/",
+            "/<div(\s+style\s*=\s*\"([^\"]+)\")?>(.+?)<\/div>/is",
             function ($matches) {
                 $style = $matches[2];
                 $body = $matches[3];
