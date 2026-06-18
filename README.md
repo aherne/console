@@ -1,258 +1,422 @@
 # Lucinda Console
 
-This API was created to give an ability of styling console responses so they are easy to read and pleasurable to see. It does this in two steps:
+Lucinda Console renders HTML-like console markup into terminal output.
 
-1. Defining a platform to create and format texts via following classes:
-    - **[Text](#Text)**: class encapsulating a text, able to be applied any of above three UNIX styling options: 
-        - **[BackgroundColor](https://github.com/aherne/console/blob/master/src/BackgroundColor.php)**: enum encapsulating background colors UNIX console texts can have 
-        - **[ForegroundColor](https://github.com/aherne/console/blob/master/src/ForegroundColor.php)**: enum encapsulating foreground colors UNIX console texts can have  
-        - **[FontStyle](https://github.com/aherne/console/blob/master/src/FontStyle.php)**: enum encapsulating font styles UNIX console texts can have (eg: bold)
-    - **[Table](#Table)**: class encapsulating a table, not able to include sub-tables
-    - **[OrderedList](#OrderedList)**: class encapsulating an ordered list, able to contain leaves that point to other ordered lists
-    - **[UnorderedList](#UnorderedList)**: class encapsulating a unordered list, able to contain leaves that point to other unordered lists
-2. Defining a HTML-like [templating language](#console-templating-language) that points to above structures behind the scenes, helping developers to implement console frontend without programming via following tags:
-    - **[&lt;div&gt;](#div-tag)**: same as HTML tag but only supporting *style* attribute. 
-    - **[&lt;table&gt;](#table-tag)**: same as HTML tag but with a number of restrictions
-    - **[&lt;ol&gt;](#ol-tag)**: same as HTML tag but with a number of differences and restrictions
-    - **[&lt;ul&gt;](#ul-tag)**: same as HTML tag, with equivalent differences and restrictions as &lt;ol&gt;
-    - **[&lt;span&gt;](#span-tag)**: same as HTML tag
-    - **[&lt;u&gt;](#u-tag)**: same as HTML tag
-    - **[&lt;b&gt;](#b-tag)**: same as HTML tag
-    - **[&lt;i&gt;](#i-tag)**: same as HTML tag
-3. Defining a class able to bind templated text at point #2 with structures at point #3 in order to build the final view:
-     - **[Wrapper](#Wrapper)**: class encapsulating a table
+It is not a template engine. It does not bind variables, resolve includes, or produce browser HTML. A framework or view layer should aggregate the final markup first, then pass that markup to this package for console rendering.
 
-API requires PHP 8.1+ and the Mbstring extension. All classes inside belong to the **Lucinda\Console** namespace.
+## Requirements
 
-## Example Usage
+- PHP 8.1+
+- `ext-mbstring`
+
+## Installation
+
+```bash
+composer require lucinda/console
+```
+
+## Basic Usage
+
+Use `Wrapper` when you want the default terminal environment to be detected automatically:
 
 ```php
-// defines text to be compiled
-$text = '
-<div style="font-style: bold">hello</div>
-    
-<table>
+use Lucinda\Console\Wrapper;
+
+$view = new Wrapper(
+    '<success>User created successfully.</success>'
+);
+
+$view->display();
+```
+
+Use `Engine` when you need direct control over the terminal environment:
+
+```php
+use Lucinda\Console\Engine;
+use Lucinda\Console\RenderMode;
+use Lucinda\Console\Terminal\EnvironmentDetector;
+
+$markup = <<<'CONSOLE'
+<view>
+    <h1>Users</h1>
+    <box title="Account" border="rounded" padding="1" width="60">
+        <p><strong>Name:</strong> Lucian</p>
+        <p><strong>Status:</strong> <badge color="green">ACTIVE</badge></p>
+    </box>
+</view>
+CONSOLE;
+
+$environment = (new EnvironmentDetector())->getResults();
+
+echo (new Engine())->render($markup, $environment, RenderMode::ANSI);
+```
+
+## Rendering Modes
+
+There are two rendering modes:
+
+- `RenderMode::ANSI`: emits ANSI escape sequences for supported styling.
+- `RenderMode::PLAIN_TEXT`: renders the same layout without ANSI styling.
+
+Plain text is useful for logs, files, tests, or output targets where terminal control sequences are not wanted.
+
+```php
+use Lucinda\Console\Engine;
+use Lucinda\Console\RenderMode;
+use Lucinda\Console\Terminal\EnvironmentDetector;
+
+$environment = (new EnvironmentDetector())->getResults();
+$engine = new Engine();
+
+$ansi = $engine->render('<error>Failure</error>', $environment, RenderMode::ANSI);
+$plain = $engine->render('<error>Failure</error>', $environment, RenderMode::PLAIN_TEXT);
+```
+
+## Terminal Environment
+
+`EnvironmentDetector` detects:
+
+- terminal width and height
+- color depth
+- Unicode support
+- OSC 8 hyperlink support
+- whether output is interactive
+
+The result is stored in `Lucinda\Console\Terminal\EnvironmentDetector\Results`.
+
+For deterministic output, construct `Results` manually:
+
+```php
+use Lucinda\Console\Terminal\ColorDepth;
+use Lucinda\Console\Terminal\EnvironmentDetector\Results;
+
+$environment = new Results();
+$environment->setWidth(80);
+$environment->setHeight(24);
+$environment->setColorDepth(ColorDepth::ANSI16);
+$environment->setUnicode(true);
+$environment->setHyperlinks(false);
+$environment->setInteractive(false);
+```
+
+## Markup Overview
+
+The root element is usually `view`, but any valid block element can be rendered.
+
+```html
+<view>
+    <h1>Application Status</h1>
+    <p>The application is running.</p>
+</view>
+```
+
+Unknown tags and unsupported attributes are rejected during parsing.
+
+## Text Elements
+
+Supported block and semantic text tags:
+
+```html
+<h1>Application Status</h1>
+<h2>Database</h2>
+<h3>Connection</h3>
+
+<p>Normal paragraph.</p>
+<success>Deployment completed.</success>
+<info>A newer version is available.</info>
+<warning>Disk space is low.</warning>
+<error>Unable to connect.</error>
+```
+
+Supported inline tags:
+
+```html
+<p>
+    <strong>Bold</strong>,
+    <em>italic</em>,
+    <u>underline</u>,
+    <s>strikethrough</s>,
+    <code>code</code>,
+    <kbd>Ctrl+C</kbd>,
+    <badge>READY</badge>
+</p>
+```
+
+Aliases:
+
+- `strong` and `b`
+- `em` and `i`
+
+## Styling
+
+Styles can be declared as attributes:
+
+```html
+<span color="bright-blue" bold underline>Styled text</span>
+<span color="ansi-208">256-color text</span>
+<span color="#ff8800" background="rgb(20,20,20)">True color</span>
+```
+
+Or through a limited `style` attribute:
+
+```html
+<p style="align: center; color: cyan">Centered text</p>
+```
+
+Supported style properties:
+
+- `color`, `background`
+- `bold`, `dim`, `italic`, `underline`, `blink`, `inverse`, `hidden`, `strikethrough`
+- `width`, `min-width`, `max-width`
+- `align`, `vertical-align`
+- `wrap`, `overflow`
+- `indent`, `padding`, `margin`, `margin-top`, `margin-bottom`
+
+Valid values:
+
+- `align`: `left`, `center`, `right`
+- `vertical-align`: `top`, `middle`, `bottom`
+- `wrap`: `word`, `character`, `none`
+- `overflow`: `wrap`, `clip`, `ellipsis`
+
+Supported colors:
+
+- named ANSI colors: `red`, `green`, `bright-blue`, etc.
+- `default`
+- `ansi-0` through `ansi-255`
+- hex colors: `#ff8800`
+- RGB colors: `rgb(255, 136, 0)`
+
+Color output degrades according to the configured terminal color depth.
+
+## Themes
+
+`Theme` provides default styles for semantic tags and CSS-like classes.
+
+```php
+use Lucinda\Console\Engine;
+use Lucinda\Console\Styling\Theme;
+
+$theme = (new Theme())->define("notice", [
+    "color" => "bright-cyan",
+    "bold" => true
+]);
+
+$engine = new Engine(theme: $theme);
+```
+
+Built-in theme variants:
+
+```php
+$theme = (new Theme())->withLightColors();
+$theme = (new Theme())->withoutColors();
+$theme = (new Theme())->withHighContrast();
+```
+
+Use classes in markup:
+
+```html
+<p class="notice">Important message</p>
+```
+
+## Layout
+
+### Wrapping
+
+```html
+<p width="30" wrap="word">
+    Text wraps on word boundaries.
+</p>
+
+<p width="10" wrap="character">
+    Text wraps by character.
+</p>
+
+<p width="20" wrap="none" overflow="ellipsis">
+    This line will be truncated.
+</p>
+```
+
+### Spacing
+
+```html
+<p margin-bottom="1">First paragraph</p>
+<p indent="4" padding="1">Indented paragraph</p>
+<spacer lines="2"/>
+```
+
+### Responsive Blocks
+
+```html
+<show min-width="100">
+    <p>Detailed output for wide terminals.</p>
+</show>
+
+<show max-width="99">
+    <p>Compact output.</p>
+</show>
+```
+
+## Boxes
+
+```html
+<box title="Result" border="rounded" padding="1" width="60">
+    <success>The operation completed successfully.</success>
+</box>
+```
+
+Supported borders:
+
+- `none`
+- `ascii`
+- `single`
+- `double`
+- `rounded`
+- `heavy`
+
+Unicode borders fall back to ASCII when the environment does not support Unicode.
+
+## Columns
+
+```html
+<columns gap="2">
+    <column width="30%" vertical-align="top">
+        <p>Navigation</p>
+    </column>
+    <column>
+        <p>Main content</p>
+    </column>
+</columns>
+```
+
+Columns support fixed widths, percentages, and flexible remaining width.
+
+## Tables
+
+```html
+<table border="rounded" width="100%" zebra>
+    <column width="40%"/>
+    <column/>
     <thead>
         <tr>
-            <td style="background-color: red">Name</td>
-            <td>Value</td>
+            <th>Name</th>
+            <th align="right">Balance</th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td style="color: green">qqq</td>
-            <td>sss</td>
+            <td>Primary account</td>
+            <td align="right">125.00</td>
         </tr>
         <tr>
-            <td>ddd</td>
-            <td>fff</td>
-        </tr>
-    </tbody>
-</table>
-    
-<ol>
-    <caption style="color: blue">Is Lucinda smart?</caption>
-    <li>
-        <ol>
-            <caption>Yes</caption>
-            <li style="background-color: blue">qwerty</li>
-            <li>asdfgh</li>
-        </ol>
-    </li>
-    <li>No</li>
-</ol>
-';
-
-// Compiles and outputs the result. ANSI support is detected from STDOUT.
-$wrapper = new Lucinda\Console\Wrapper($text);
-echo $wrapper->getBody();
-
-// Detection can be overridden when output is handled by another console layer.
-$wrapper = new Lucinda\Console\Wrapper($text, true);
-```
-
-## Console Templating Language
-
-Console templating language supports a fraction of HTML standard, namely parts that are feasable in styling and formatting console text. Certain elements allow a *style* attribute that supports following CSS directives:
-
-- *font-style*: value must be one of [FontStyle](https://github.com/aherne/console/blob/master/src/FontStyle.php) constant names
-- *background-color*: value must be one of [BackgroundColor](https://github.com/aherne/console/blob/master/src/BackgroundColor.php) constant names
-- *color*: value must be one of [ForegroundColor](https://github.com/aherne/console/blob/master/src/ForegroundColor.php) constant names
-    
-### Div Tag
-
-Binding to **[Text](#Text)**, works the same as HTML &lt;div&gt; tag with following restrictions:
-
-- only supporting *style* attribute
-- body can only contain plain text or/and [&lt;span&gt;](#span-tag), [&lt;u&gt;](#u-tag), [&lt;b&gt;](#b-tag), [&lt;i&gt;](#i-tag) tags
-
-Syntax example:
-
-```html
-<div style="background-color: red">Hello, <b>world</b>!</div>
-```
-
-### Table Tag
-
-Binding to **[Table](#Table)**, works the same as HTML &lt;table&gt; tag with following restrictions:
-
-- must have a &lt;thead&gt; child
-- must have a &lt;tbody&gt; child
-- any &lt;tr&gt; inside supports no attributes
-- any &lt;td&gt; inside supports only *style* attribute
-- any &lt;td&gt; body can only contain plain text
-
-Syntax example:
-
-```html
-<table>
-    <thead>
-        <tr>
-            <td style="color: red">Name</td>
-            <td>Value</td>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>qqq</td>
-            <td>sss</td>
+            <td colspan="2">Shared note</td>
         </tr>
     </tbody>
 </table>
 ```
 
-### Ol Tag
+Tables support:
 
-Binding to **[OrderedList](#OrderedList)**, works the same as HTML &lt;ol&gt; tag with following differences and restrictions:
+- `thead` and `tbody`
+- `tr`, `th`, `td`
+- optional `column` width definitions
+- `colspan`
+- alignment
+- border styles
+- `zebra`
+- `empty`
 
-- can contain a &lt;caption&gt; tag defining what list is about (behaving as **[&lt;div&gt;](#div-tag)**). 
-- if a &lt;caption&gt; is present it MUST be first child!
-- must contain &lt;li&gt; sub-tags supporting only *style* attribute
-- any &lt;li&gt; body can only contain one of below:
-   - plain text or/and [&lt;span&gt;](#span-tag), [&lt;u&gt;](#u-tag), [&lt;b&gt;](#b-tag), [&lt;i&gt;](#i-tag) tags
-   - another &lt;ol&gt;/&lt;ul&gt; tag
-
-Example:
+## Lists
 
 ```html
-<ol>
-    <caption style="color: blue">Is Lucinda smart?</caption>
+<ol marker="roman" start="4">
+    <li>Install dependencies</li>
     <li>
-        <ol>
-            <caption>Yes</caption>
-            <li style="background-color: blue">qwerty</li>
-            <li>asdfgh</li>
-        </ol>
+        Run checks
+        <ul marker="checkmark">
+            <li>Static analysis</li>
+            <li>Unit tests</li>
+        </ul>
     </li>
-    <li>No</li>
 </ol>
 ```
 
-### Ul Tag
+Supported markers:
 
-Binding to **[UnorderedList](#UnorderedList)**, works the same as HTML &lt;ul&gt; tag with equivalent differences and restrictions as **[&lt;ol&gt;](#ol-tag)**.
+- `decimal`
+- `alphabetic`
+- `roman`
+- `bullet`
+- `dash`
+- `checkmark`
+- any custom marker string
 
-### Span Tag
-
-Works the same as HTML &lt;span&gt; with following restrictions:
-
-- supports only *style* attribute
-- plain text or/and [&lt;u&gt;](#u-tag), [&lt;b&gt;](#b-tag), [&lt;i&gt;](#i-tag) tags
-- can only occur inside a [&lt;div&gt;](#div-tag) or &lt;caption&gt;
-
-Example:
+## Links
 
 ```html
-<div>Hello, <span style="background-color: BLUE">Lucian</span>!</div>
+<link href="https://example.com">Documentation</link>
 ```
 
-### B Tag
+In ANSI mode, links use OSC 8 when the environment supports hyperlinks. In plain-text mode, the URL is appended after the text:
 
-Works the same as HTML &lt;b&gt;  with same restrictions as [&lt;span&gt;](#span-tag) tag! Equivalent to:
+```text
+Documentation (https://example.com)
+```
+
+## Progress and Spinner
+
+Static markup:
 
 ```html
-<span style="font-style: bold">Lucian</span>
+<progress value="42" max="100" width="30"/>
+<spinner label="Loading"/>
 ```
 
-### U Tag
+Interactive helpers:
 
-Works the same as HTML &lt;u&gt;  with same restrictions as [&lt;span&gt;](#span-tag) tag! Equivalent to:
+```php
+use Lucinda\Console\Engine;
+use Lucinda\Console\Interactive\LiveProgress;
+use Lucinda\Console\Interactive\LiveSpinner;
 
-```html
-<span style="font-style: underline">Lucian</span>
+$progress = new LiveProgress(new Engine(), max: 100);
+$progress->update(50, "Half done");
+$progress->finish(100, "Done");
+
+$spinner = new LiveSpinner(label: "Loading");
+$spinner->tick();
+$spinner->finish("Done");
 ```
 
-^ Note the difference from HTML *text-decoration: underline*
+Interactive helpers require an interactive terminal and reject redirected output.
 
-### I Tag
+## Validation and Limits
 
-Works the same as HTML &lt;i&gt;  with same restrictions as [&lt;span&gt;](#span-tag) tag!  Equivalent to:
+The parser validates the markup before rendering:
 
-```html
-<span style="font-style: italic">Lucian</span>
+- unknown tags are rejected
+- unsupported attributes are rejected
+- invalid colors and dimensions are rejected
+- invalid table/list structure is rejected
+- parser errors include line and column
+- input size is limited to 1 MB
+- token count is limited to 10,000
+- nesting depth is limited to 100
+
+Text content is decoded from HTML entities and terminal control sequences are stripped before output.
+
+## Testing
+
+Run unit tests:
+
+```bash
+composer test
 ```
 
-^ Note the difference from HTML *font-style: italic*
+Run static analysis:
 
-## Reference Guide
+```bash
+composer analyse
+```
 
-### Text
-
-Class [Lucinda\Console\Text](https://github.com/aherne/console/blob/master/src/Text.php) implements [Stringable](https://www.php.net/manual/en/class.stringable.php) and styles a UNIX console text, defining following public methods:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| __construct | string $text | void | Sets text to style |
-| setFontStyle | [Lucinda\Console\FontStyle](https://github.com/aherne/console/blob/master/src/FontStyle.php) $style | void | Sets text style (eg: makes it bold) from input enum member. |
-| setBackgroundColor | [Lucinda\Console\BackgroundColor](https://github.com/aherne/console/blob/master/src/BackgroundColor.php) $color | void | Sets text background color from input enum member. |
-| setForegroundColor | [Lucinda\Console\ForegroundColor](https://github.com/aherne/console/blob/master/src/ForegroundColor.php) $color | void | Sets text foreground color from input enum member. |
-| getOriginalValue | void | string | Gets original text before styling |
-| getStyledValue | void | string | Gets final text after styling |
-| toString | void | string | Gets final string representation of text to be shown on console/terminal |
-
-### Table
-
-Class [Lucinda\Console\Table](https://github.com/aherne/console/blob/master/src/Table.php) implements [Stringable](https://www.php.net/manual/en/class.stringable.php) and creates a table to be displayed on console/terminal, defining following public methods:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| __construct | array $columns | void | Sets table columns based on *string* or *[Text](#Text)* array input |
-| addRow | array $row | void | Adds a row to table based on *string* or *[Text](#Text)* array input |
-| toString | void | string | Gets final string representation of table to be shown on console/terminal |
-
-### AbstractList
-
-Abstract class [Lucinda\Console\AbstractList](https://github.com/aherne/console/blob/master/src/AbstractList.php) implements [Stringable](https://www.php.net/manual/en/class.stringable.php) and creates a list to be displayed on console/terminal, defining following public methods:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| __construct | int $indent = 0 | void | Constructs a list by number of spaces to indent in members (default=5) |
-| setCaption | string\|Text $caption | void | Sets optional caption to define what list is about based on *string* or *[Text](#Text)* input |
-| addItem | string\|Text $item | void | Adds a textual member to list based on *string* or *[Text](#Text)* input. |
-| addList | [AbstractList](#AbstractList) | void | Adds a [AbstractList](#AbstractList) member to list |
-| toString | void | string | Gets final string representation of list to be shown on console/terminal |
-
-and following abstract method children must implement:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| formatOptionNumber | int $optionNumber | string | Formats list option number for later display |
-
-### OrderedList
-
-Class [Lucinda\Console\OrderedList](https://github.com/aherne/console/blob/master/src/OrderedList.php) extends [AbstractList](#AbstractList) and creates an ordered list to be displayed on console/terminal.
-
-### UnorderedList
-
-Class [Lucinda\Console\UnorderedList](https://github.com/aherne/console/blob/master/src/UnorderedList.php) extends [AbstractList](#AbstractList) and creates an uordered list to be displayed on console/terminal.
-
-### Wrapper
-
-Class [Lucinda\Console\Wrapper](https://github.com/aherne/console/blob/master/src/Wrapper.php) compiles user-defined text using [Console Templating Language](#console-templating-language) by binding tags inside to their equivalent classes. It defines following public methods:
-
-| Method | Arguments | Returns | Description |
-| --- | --- | --- | --- |
-| __construct | string $body, ?bool $supportsStyling = null | void | Takes text received and compiles it. ANSI support can be explicitly enabled or disabled. |
-| getBody | void | string | Gets compiled body, ready to be displayed on console/terminal |
-
-If compilation fails, a [Lucinda\Console\Exception](https://github.com/aherne/console/blob/master/src/Exception.php) is thrown!
+The test suite is generated and executed with `lucinda/unit-testing`.
