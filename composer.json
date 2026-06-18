@@ -1,5 +1,5 @@
 {
-    "name": "lucinda/console",
+    "name": "lucinda/console-view",
     "type": "library",
     "description": "HTML-like terminal view language and renderer for console MVC applications",
     "keywords": ["terminal", "console", "ansi", "templating", "mvc", "tables"],
