@@ -1,0 +1,8 @@
+Release Checklist
+
+1. Install dependencies
+2. Run checks
+  ✓ Static analysis
+  ✓ Unit tests
+3. Publish release notes
+Documentation: Console guide (https://example.com/docs)

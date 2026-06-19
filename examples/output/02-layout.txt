@@ -1,0 +1,9 @@
+╭ Account ───────────────────────────────────────────╮
+│                                                    │
+│ Name: Lucian Popescu                               │
+│ Role: Maintainer                                   │
+│                                                    │
+╰────────────────────────────────────────────────────╯
+Queue                     Status
+emails                    healthy
+invoices                  delayed

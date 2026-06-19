@@ -5,6 +5,9 @@ namespace Lucinda\Console\Language;
 use Lucinda\Console\Exception;
 use Lucinda\Console\Rendering\Color;
 
+/**
+ * Validates parsed documents against supported tags, attributes, values, and structure.
+ */
 final class Validator
 {
     private const STYLE_PROPERTIES = [
@@ -53,18 +56,37 @@ final class Validator
 
     private Color $color;
 
+    /**
+     * Creates a validator with the color parser used for style validation.
+     *
+     * @param ?Color $color
+     * @return void
+     */
     public function __construct(?Color $color = null)
     {
         $this->color = $color ?? new Color();
     }
 
+    /**
+     * Validates the full document tree.
+     *
+     * @param DocumentNode $document
+     * @return void
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     public function validate(DocumentNode $document): void
     {
         $this->validateChildren($document->getChildren(), null, 0);
     }
 
     /**
+     * Recursively validates supported element tags and maximum depth.
+     *
      * @param Node[] $children
+     * @param ?ElementNode $parent
+     * @param int $depth
+     * @return void
+     * @throws \Lucinda\Console\Language\ParseException
      */
     private function validateChildren(array $children, ?ElementNode $parent, int $depth): void
     {
@@ -85,7 +107,13 @@ final class Validator
         }
     }
 
-    // break me
+    /**
+     * Validates all attributes present on an element.
+     *
+     * @param ElementNode $element
+     * @return void
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function validateAttributes(ElementNode $element): void
     {
         $allowed = array_merge(self::GLOBAL_ATTRIBUTES, self::TAG_ATTRIBUTES[$element->getName()] ?? []);
@@ -108,6 +136,13 @@ final class Validator
         $this->validateOneOf($element, "border");
     }
 
+    /**
+     * Validates inline style declarations on an element.
+     *
+     * @param ElementNode $element
+     * @return void
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function validateStyle(ElementNode $element): void
     {
         $inlineStyle = $element->getAttribute("style");
@@ -128,6 +163,15 @@ final class Validator
         }
     }
 
+    /**
+     * Validates one parsed inline style property value.
+     *
+     * @param string $name
+     * @param string $value
+     * @param ElementNode $element
+     * @return void
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function validateStyleValue(string $name, string $value, ElementNode $element): void
     {
         if (in_array($name, ["color", "background"], true)) {
@@ -150,6 +194,14 @@ final class Validator
         }
     }
 
+    /**
+     * Ensures an attribute value is one of the supported style keywords.
+     *
+     * @param ElementNode $element
+     * @param string $attribute
+     * @return void
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function validateOneOf(ElementNode $element, string $attribute): void
     {
         $value = $element->getAttribute($attribute);
@@ -162,6 +214,14 @@ final class Validator
         }
     }
 
+    /**
+     * Validates required parent-child relationships and required attributes.
+     *
+     * @param ElementNode $element
+     * @param ?ElementNode $parent
+     * @return void
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function validateStructure(ElementNode $element, ?ElementNode $parent): void
     {
         $parentName = $parent?->getName();
@@ -198,6 +258,13 @@ final class Validator
         }
     }
 
+    /**
+     * Validates color and background attributes.
+     *
+     * @param ElementNode $element
+     * @return void
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function validateColor(ElementNode $element): void
     {
         foreach (["color", "background"] as $attribute) {
@@ -215,6 +282,13 @@ final class Validator
         }
     }
 
+    /**
+     * Validates integer and width-like attributes.
+     *
+     * @param ElementNode $element
+     * @return void
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function validateIntegers(ElementNode $element): void
     {
         $width = $element->getAttribute("width");

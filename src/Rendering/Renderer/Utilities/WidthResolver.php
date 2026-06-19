@@ -4,9 +4,19 @@ namespace Lucinda\Console\Rendering\Renderer\Utilities;
 
 use Lucinda\Console\Language\ElementNode;
 
+/**
+ * Resolves fixed, percentage, and flexible element widths.
+ */
 final class WidthResolver extends ContextAware
 {    
-    /** @param ElementNode[] $elements @return int[] */
+    /**
+     * Allocates the available width across sibling elements.
+     *
+     * @param ElementNode[] $elements
+     *
+     * @return int[]
+     * @param int $available
+     */
     public function allocateWidths(array $elements, int $available): array
     {
         if ($elements === []) {
@@ -45,6 +55,14 @@ final class WidthResolver extends ContextAware
         return $widths;
     }
 
+    /**
+     * Resolves a single element width with min and max constraints.
+     *
+     * @param ElementNode $element
+     * @param int $available
+     * @return int
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     public function resolveWidth(ElementNode $element, int $available): int
     {
         $style = $this->context->getStyles()->resolve($element);

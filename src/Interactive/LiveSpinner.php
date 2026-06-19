@@ -7,11 +7,22 @@ use Lucinda\Console\Rendering\DisplayWidth;
 use Lucinda\Console\Terminal\EnvironmentDetector;
 use Lucinda\Console\Terminal\EnvironmentDetector\Results;
 
+/**
+ * Renders an animated spinner on one interactive terminal line.
+ */
 final class LiveSpinner
 {
     private int $frame = 0;
     private DisplayWidth $displayWidth;
 
+    /**
+     * Creates a live spinner and verifies terminal interactivity.
+     *
+     * @param ?Results $environment
+     * @param string $label
+     * @return void
+     * @throws \Lucinda\Console\Exception
+     */
     public function __construct(
         private readonly ?Results $environment = null,
         private readonly string $label = "Loading"
@@ -23,6 +34,11 @@ final class LiveSpinner
         }
     }
 
+    /**
+     * Advances and redraws the spinner by one frame.
+     *
+     * @return void
+     */
     public function tick(): void
     {
         $environment = $this->getEnvironment();
@@ -33,11 +49,22 @@ final class LiveSpinner
         $this->frame++;
     }
 
+    /**
+     * Clears the spinner line and writes the completion message.
+     *
+     * @param string $message
+     * @return void
+     */
     public function finish(string $message = "Done"): void
     {
         fwrite(STDOUT, "\r\e[2K".$this->displayWidth->escape($message).PHP_EOL);
     }
 
+    /**
+     * Returns the supplied environment or detects the active terminal.
+     *
+     * @return Results
+     */
     private function getEnvironment(): Results
     {
         return $this->environment ?? (new EnvironmentDetector())->getResults();

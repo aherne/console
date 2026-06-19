@@ -2,6 +2,9 @@
 
 namespace Lucinda\Console\Terminal;
 
+/**
+ * Describes the color capability selected for terminal rendering.
+ */
 enum ColorDepth: int
 {
     case NONE = 0;

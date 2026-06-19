@@ -10,9 +10,19 @@ use Lucinda\Console\Rendering\Renderer\Utilities\TextLayout;
 use Lucinda\Console\Rendering\Renderer\Utilities\WidthResolver;
 use Lucinda\Console\Styling\Style;
 
+/**
+ * Renders table elements with column widths, borders, headers, and cell alignment.
+ */
 final class TableRenderer extends ContextAware
 {
-    /** @return string[] */
+    /**
+     * Renders a table element into terminal lines.
+     *
+     * @return string[]
+     * @param ElementNode $table
+     * @param int $width
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     public function render(ElementNode $table, int $width): array
     {
         $rows = $this->getRows($table);
@@ -47,6 +57,12 @@ final class TableRenderer extends ContextAware
         return $lines;
     }
 
+    /**
+     * Collects table row metadata from thead and tbody groups.
+     *
+     * @return array<int,array{header:bool,cells:ElementNode[]}>
+     * @param ElementNode $table
+     */
     private function getRows(ElementNode $table): array
     {
         $rows = [];
@@ -64,6 +80,15 @@ final class TableRenderer extends ContextAware
         return $rows;
     }
 
+    /**
+     * Resolves each table column width from column specifications or equal distribution.
+     *
+     * @param ElementNode[] $specifications
+     *
+     * @return int[]
+     * @param int $contentWidth
+     * @param int $columnCount
+     */
     private function getWidths(array $specifications, int $contentWidth, int $columnCount): array
     {
         $utility = new WidthResolver($this->context);
@@ -81,6 +106,21 @@ final class TableRenderer extends ContextAware
         return $widths;
     }
 
+    /**
+     * Renders one table row and appends its output lines and separator.
+     *
+     * @param int[]                                      $widths
+     * @param array{header:bool,cells:ElementNode[]}     $row
+     * @param string[]                                   $border
+     * @param string[]                                   $lines
+     * @param ElementNode $table
+     * @param int $columnCount
+     * @param int $rowsCount
+     * @param bool $hasBorder
+     * @param int $rowIndex
+     * @return void
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function parseRow(
         ElementNode $table,
         int $columnCount,
@@ -133,7 +173,15 @@ final class TableRenderer extends ContextAware
         }
     }
 
-    /** @param int[] $widths @param string[] $border */
+    /**
+     * Builds a table border separator line.
+     *
+     * @param int[]    $widths
+     * @param string[] $border
+     * @param bool $hasBorder
+     * @param string $position
+     * @return string
+     */
     private function tableSeparator(array $widths, array $border, bool $hasBorder, string $position): string
     {
         if (!$hasBorder) {

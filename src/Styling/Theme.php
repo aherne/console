@@ -2,11 +2,19 @@
 
 namespace Lucinda\Console\Styling;
 
+/**
+ * Holds named styles used by element names and CSS-like class names.
+ */
 final class Theme
 {
     /** @var array<string,Style> */
     private array $styles = [];
 
+    /**
+     * Creates the default console theme.
+     *
+     * @return void
+     */
     public function __construct()
     {
         $this->styles = [
@@ -33,7 +41,11 @@ final class Theme
     }
 
     /**
+     * Returns a cloned theme with a named style defined or replaced.
+     *
      * @param array<string,int|string|bool|null> $properties
+     * @param string $name
+     * @return self
      */
     public function define(string $name, array $properties): self
     {
@@ -42,11 +54,22 @@ final class Theme
         return $clone;
     }
 
+    /**
+     * Returns the named style or an empty style when not defined.
+     *
+     * @param string $name
+     * @return Style
+     */
     public function get(string $name): Style
     {
         return $this->styles[$name] ?? new Style();
     }
 
+    /**
+     * Returns a theme variant tuned for light terminal backgrounds.
+     *
+     * @return self
+     */
     public function withLightColors(): self
     {
         return $this
@@ -54,6 +77,11 @@ final class Theme
             ->define("h2", ["bold" => true, "color" => "magenta", "margin-bottom" => 1]);
     }
 
+    /**
+     * Returns a theme variant that avoids color output.
+     *
+     * @return self
+     */
     public function withoutColors(): self
     {
         return $this
@@ -65,6 +93,11 @@ final class Theme
             ->define("error", ["bold" => true, "inverse" => true]);
     }
 
+    /**
+     * Returns a theme variant with stronger foreground/background contrast.
+     *
+     * @return self
+     */
     public function withHighContrast(): self
     {
         return $this

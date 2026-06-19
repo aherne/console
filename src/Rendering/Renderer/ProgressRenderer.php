@@ -6,8 +6,19 @@ use Lucinda\Console\Language\ElementNode;
 use Lucinda\Console\Rendering\Renderer\Utilities\ContextAware;
 use Lucinda\Console\Rendering\Renderer\Utilities\WidthResolver;
 
+/**
+ * Renders a static progress bar line.
+ */
 final class ProgressRenderer extends ContextAware
 {
+    /**
+     * Renders a progress element within the available width.
+     *
+     * @param ElementNode $element
+     * @param int $width
+     * @return string
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     public function render(ElementNode $element, int $width): string
     {
         $utility = new WidthResolver($this->context);

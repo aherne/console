@@ -7,8 +7,20 @@ use Lucinda\Console\Rendering\Renderer\Utilities\BorderCharacters;
 use Lucinda\Console\Rendering\Renderer\Utilities\ContextAware;
 use Lucinda\Console\Rendering\Renderer\Utilities\TextLayout;
 
+/**
+ * Renders bordered or unbordered box elements around nested content.
+ */
 final class BoxRenderer extends ContextAware
 {
+    /**
+     * Renders a box element and its children within a fixed width.
+     *
+     * @return string[]
+     * @param ElementNode $element
+     * @param int $width
+     * @param NodesRenderer $nodesRenderer
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     public function render(ElementNode $element, int $width, NodesRenderer $nodesRenderer): array
     {
         $borderCharacters = new BorderCharacters($this->context);

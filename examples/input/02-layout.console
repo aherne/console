@@ -1,0 +1,19 @@
+<view>
+    <box title="Account" border="rounded" padding="1" width="54">
+        <p><strong>Name:</strong> Lucian Popescu</p>
+        <p><strong>Role:</strong> Maintainer</p>
+    </box>
+
+    <columns gap="3">
+        <column width="30%">
+            <p><strong>Queue</strong></p>
+            <p>emails</p>
+            <p>invoices</p>
+        </column>
+        <column>
+            <p><strong>Status</strong></p>
+            <p><success>healthy</success></p>
+            <p><warning>delayed</warning></p>
+        </column>
+    </columns>
+</view>

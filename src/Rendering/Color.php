@@ -5,6 +5,9 @@ namespace Lucinda\Console\Rendering;
 use Lucinda\Console\Exception;
 use Lucinda\Console\Terminal\ColorDepth;
 
+/**
+ * Parses color values and maps them to ANSI escape-code fragments.
+ */
 final class Color
 {
     private const NAMED = [
@@ -27,6 +30,15 @@ final class Color
     ];
     private const ANSI_LEVELS = [0, 95, 135, 175, 215, 255];
 
+    /**
+     * Returns an ANSI color code for the requested color depth.
+     *
+     * @param string $value
+     * @param ColorDepth $depth
+     * @param bool $background
+     * @return ?string
+     * @throws \Lucinda\Console\Exception
+     */
     public function getAnsiCode(string $value, ColorDepth $depth, bool $background = false): ?string
     {
         if ($depth === ColorDepth::NONE) {
@@ -51,6 +63,13 @@ final class Color
         return (string) ($background ? ($code >= 90 ? $code+10 : $code+10) : $code);
     }
 
+    /**
+     * Validates that a color value is supported.
+     *
+     * @param string $value
+     * @return void
+     * @throws \Lucinda\Console\Exception
+     */
     public function validate(string $value): void
     {
         if (strtolower(trim($value)) === "default") {
@@ -59,7 +78,13 @@ final class Color
         $this->parse($value);
     }
 
-    /** @return array{int,int,int,int|null} */
+    /**
+     * Parses a named, hex, rgb(), or ansi-N color into RGB and optional ANSI-16 code.
+     *
+     * @return array{int,int,int,int|null}
+     * @param string $value
+     * @throws \Lucinda\Console\Exception
+     */
     private function parse(string $value): array
     {
         $value = strtolower(trim($value));
@@ -86,6 +111,14 @@ final class Color
         throw new Exception("Invalid color: ".$value);
     }
 
+    /**
+     * Maps RGB values to the nearest ANSI-256 palette index.
+     *
+     * @param int $r
+     * @param int $g
+     * @param int $b
+     * @return int
+     */
     private function toAnsi256(int $r, int $g, int $b): int
     {
         $levels = self::ANSI_LEVELS;
@@ -103,7 +136,12 @@ final class Color
         return 16 + 36*$nearest($r) + 6*$nearest($g) + $nearest($b);
     }
 
-    /** @return array{int,int,int,null} */
+    /**
+     * Converts an ANSI-256 palette index into RGB values.
+     *
+     * @return array{int,int,int,null}
+     * @param int $index
+     */
     private function fromAnsi256(int $index): array
     {
         if ($index < 16) {
@@ -124,6 +162,14 @@ final class Color
             ];
     }
 
+    /**
+     * Finds the closest ANSI-16 foreground color code for RGB values.
+     *
+     * @param int $r
+     * @param int $g
+     * @param int $b
+     * @return int
+     */
     private function nearestAnsi16(int $r, int $g, int $b): int
     {
         $best = 37;

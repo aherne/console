@@ -7,8 +7,22 @@ use Lucinda\Console\Rendering\Renderer\Utilities\ContextAware;
 use Lucinda\Console\Rendering\Renderer\Utilities\InlineLayout;
 use Lucinda\Console\Styling\Style;
 
+/**
+ * Renders inline nodes with wrapping, overflow handling, styles, and links.
+ */
 final class InlineRenderer extends ContextAware
 {
+    /**
+     * Renders inline nodes into one or more terminal lines.
+     *
+     * @param \Lucinda\Console\Language\Node[] $nodes
+     *
+     * @return string[]
+     * @param int $width
+     * @param Style $style
+     * @param bool $preserveWhitespace
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     public function render(array $nodes, int $width, Style $style, bool $preserveWhitespace = false): array
     {
         $utility = new InlineLayout($this->context);

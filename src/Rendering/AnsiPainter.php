@@ -5,6 +5,9 @@ namespace Lucinda\Console\Rendering;
 use Lucinda\Console\Styling\Style;
 use Lucinda\Console\Terminal\EnvironmentDetector\Results;
 
+/**
+ * Applies ANSI styling and hyperlink escape sequences to text.
+ */
 final class AnsiPainter
 {
     private const MAPPINGS = [
@@ -19,11 +22,26 @@ final class AnsiPainter
         ];
     private readonly Color $color;
 
+    /**
+     * Creates a painter with the color mapper used for foreground and background styles.
+     *
+     * @param Color $color
+     * @return void
+     */
     public function __construct(Color $color)
     {
         $this->color = $color;
     }
 
+    /**
+     * Wraps text in ANSI style codes and optional OSC 8 hyperlink codes.
+     *
+     * @param string $text
+     * @param Style $style
+     * @param Results $environment
+     * @param ?string $href
+     * @return string
+     */
     public function paint(string $text, Style $style, Results $environment, ?string $href = null): string
     {
         $codes = [];

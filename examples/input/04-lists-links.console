@@ -1,0 +1,9 @@
+<view>
+    <h2>Release Checklist</h2>
+    <ol marker="decimal">
+        <li>Install dependencies</li>
+        <li>Run checks<ul marker="checkmark"><li>Static analysis</li><li>Unit tests</li></ul></li>
+        <li>Publish release notes</li>
+    </ol>
+    <p>Documentation: <link href="https://example.com/docs">Console guide</link></p>
+</view>

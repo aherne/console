@@ -72,6 +72,15 @@ $ansi = $engine->render('<error>Failure</error>', $environment, RenderMode::ANSI
 $plain = $engine->render('<error>Failure</error>', $environment, RenderMode::PLAIN_TEXT);
 ```
 
+## Examples
+
+Rendered examples are available in `examples/`:
+
+- `examples/input/` contains raw Lucinda Console markup.
+- `examples/output/` contains the corresponding Unix-style terminal output.
+
+The output snapshots use LF line endings, Unicode drawing characters, width `80`, and plain-text mode so they can be compared directly in any editor. Windows legacy console output is not represented; on Windows, WSL is the supported terminal path.
+
 ## Terminal Environment
 
 `EnvironmentDetector` detects:

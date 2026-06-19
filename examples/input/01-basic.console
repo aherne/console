@@ -1,0 +1,8 @@
+<view>
+    <h1>Deployment Report</h1>
+    <p><strong>Application:</strong> Billing API</p>
+    <p><strong>Version:</strong> 2.4.1</p>
+    <success>Deployment completed successfully.</success>
+    <info>3 services restarted.</info>
+    <warning>1 worker is still draining old jobs.</warning>
+</view>

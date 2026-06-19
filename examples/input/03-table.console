@@ -1,0 +1,27 @@
+<view>
+    <h2>Balances</h2>
+    <table border="rounded" width="72">
+        <column width="34"/>
+        <column width="16"/>
+        <column/>
+        <thead>
+            <tr>
+                <th>Account</th>
+                <th align="right">Balance</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Primary operating account</td>
+                <td align="right">1250.00</td>
+                <td><success>OK</success></td>
+            </tr>
+            <tr>
+                <td>Reserve account</td>
+                <td align="right">300.00</td>
+                <td><warning>LOW</warning></td>
+            </tr>
+        </tbody>
+    </table>
+</view>

@@ -2,6 +2,9 @@
 
 namespace Lucinda\Console\Language;
 
+/**
+ * Enumerates tokenizer output categories.
+ */
 enum TokenType
 {
     case TEXT;

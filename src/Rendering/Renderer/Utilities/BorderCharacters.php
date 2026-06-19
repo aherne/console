@@ -2,9 +2,17 @@
 
 namespace Lucinda\Console\Rendering\Renderer\Utilities;
 
+/**
+ * Provides unicode or ASCII border character sets for boxes and tables.
+ */
 final class BorderCharacters extends ContextAware
 {
-    /** @return array{string,string,string,string,string,string,string} */
+    /**
+     * Returns box border characters for the requested style.
+     *
+     * @return array{string,string,string,string,string,string,string}
+     * @param string $border
+     */
     public function borderCharacters(string $border): array
     {
         if (!$this->context->getEnvironment()->getUnicode() || $border === "ascii") {
@@ -18,7 +26,12 @@ final class BorderCharacters extends ContextAware
         };
     }  
 
-    /** @return array{string,string,string,string,string,string,string,string,string,string,string} */
+    /**
+     * Returns table border characters for the requested style.
+     *
+     * @return array{string,string,string,string,string,string,string,string,string,string,string}
+     * @param string $border
+     */
     public function tableBorderCharacters(string $border): array
     {
         if (!$this->context->getEnvironment()->getUnicode() || $border === "ascii") {

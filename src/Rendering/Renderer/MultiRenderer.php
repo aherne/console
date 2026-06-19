@@ -8,12 +8,24 @@ use Lucinda\Console\Rendering\Renderer\Utilities\ContextAware;
 use Lucinda\Console\Rendering\Renderer\Utilities\WidthResolver;
 use Lucinda\Console\Styling\Style;
 
+/**
+ * Dispatches block and inline nodes to specialized renderers.
+ */
 final class MultiRenderer extends ContextAware implements NodesRenderer
 {
     private const INLINE_ELEMENTS = [
         "span", "strong", "b", "em", "i", "u", "s", "code", "kbd", "badge", "link", "br"
     ];
 
+    /**
+     * Renders a node list into terminal lines.
+     *
+     * @param \Lucinda\Console\Language\Node[] $nodes
+     *
+     * @return string[]
+     * @param int $width
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     public function render(array $nodes, int $width): array
     {
         $lines = [];
@@ -40,7 +52,14 @@ final class MultiRenderer extends ContextAware implements NodesRenderer
         return $lines;
     }
 
-    /** @return string[] */
+    /**
+     * Renders one element using the renderer that matches its tag name.
+     *
+     * @return string[]
+     * @param ElementNode $element
+     * @param int $availableWidth
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function renderElement(ElementNode $element, int $availableWidth): array
     {
         $utility = new WidthResolver($this->context);
@@ -64,47 +83,97 @@ final class MultiRenderer extends ContextAware implements NodesRenderer
         };
     }
 
-    /** @return string[] */
+    /**
+     * Renders a paragraph-like element.
+     *
+     * @return string[]
+     * @param ElementNode $element
+     * @param int $width
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function renderParagraph(ElementNode $element, int $width): array
     {
         $renderer = new ParagraphRenderer($this->context);
         return $renderer->render($element, $width);
     }
 
-    /** @return string[] */
+    /**
+     * Renders a box element.
+     *
+     * @return string[]
+     * @param ElementNode $element
+     * @param int $width
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function renderBox(ElementNode $element, int $width): array
     {
         $renderer = new BoxRenderer($this->context);
         return $renderer->render($element, $width, $this);
     }
 
-    /** @return string[] */
+    /**
+     * Renders a columns element.
+     *
+     * @return string[]
+     * @param ElementNode $element
+     * @param int $width
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function renderColumns(ElementNode $element, int $width): array
     {
         $renderer = new ColumnsRenderer($this->context);
         return $renderer->render($element, $width, $this);
     }
 
-    /** @return string[] */
+    /**
+     * Renders a table element.
+     *
+     * @return string[]
+     * @param ElementNode $table
+     * @param int $width
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function renderTable(ElementNode $table, int $width): array
     {
         $renderer = new TableRenderer($this->context);
         return $renderer->render($table, $width);
     }
 
-    /** @return string[] */
+    /**
+     * Renders an ordered or unordered list element.
+     *
+     * @return string[]
+     * @param ElementNode $list
+     * @param int $width
+     * @param int $depth
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function renderList(ElementNode $list, int $width, int $depth = 0): array
     {
         $renderer = new ListRenderer($this->context);
         return $renderer->render($list, $width, $depth);
     }
 
+    /**
+     * Renders a progress element as a single line.
+     *
+     * @param ElementNode $element
+     * @param int $width
+     * @return string
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function renderProgress(ElementNode $element, int $width): string
     {
         $renderer = new ProgressRenderer($this->context);
         return $renderer->render($element, $width);
     }
 
+    /**
+     * Renders a spinner element as a single frame.
+     *
+     * @param ElementNode $element
+     * @return string
+     */
     private function renderSpinner(ElementNode $element): string
     {
         $frame = (string) $element->getAttribute("frame", $this->context->getEnvironment()->getUnicode() ? "\u{280B}" : "|");
@@ -112,12 +181,30 @@ final class MultiRenderer extends ContextAware implements NodesRenderer
         return $frame.($label === "" ? "" : " ".$label);
     }
 
+    /**
+     * Renders inline nodes through the inline renderer.
+     *
+     * @param \Lucinda\Console\Language\Node[] $nodes
+     *
+     * @return string[]
+     * @param int $width
+     * @param Style $style
+     * @param bool $preserveWhitespace
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function renderInline(array $nodes, int $width, Style $style, bool $preserveWhitespace = false): array
     {
         $renderer = new InlineRenderer($this->context);
         return $renderer->render($nodes, $width, $style, $preserveWhitespace);
     }
 
+    /**
+     * Determines whether a responsive show element should render at the current width.
+     *
+     * @param ElementNode $element
+     * @param int $width
+     * @return bool
+     */
     private function isVisible(ElementNode $element, int $width): bool
     {
         $min = (int) $element->getAttribute("min-width", "0");
@@ -125,7 +212,14 @@ final class MultiRenderer extends ContextAware implements NodesRenderer
         return $width >= $min && $width <= $max;
     }
 
-    /** @param string[] $target @param string[] $block */
+    /**
+     * Appends a rendered block with optional top margin.
+     *
+     * @param string[] $target
+     * @param string[] $block
+     * @param int $marginTop
+     * @return void
+     */
     private function appendBlock(array &$target, array $block, int $marginTop = 0): void
     {
         if ($block === []) {

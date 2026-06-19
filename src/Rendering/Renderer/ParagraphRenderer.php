@@ -6,8 +6,19 @@ use Lucinda\Console\Language\ElementNode;
 use Lucinda\Console\Rendering\Renderer\Utilities\ContextAware;
 use Lucinda\Console\Rendering\Renderer\Utilities\TextLayout;
 
+/**
+ * Renders paragraph-like block elements with indentation, padding, and alignment.
+ */
 final class ParagraphRenderer extends ContextAware
 {
+    /**
+     * Renders a paragraph element into padded terminal lines.
+     *
+     * @return string[]
+     * @param ElementNode $element
+     * @param int $width
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     public function render(ElementNode $element, int $width): array
     {
         $utility = new TextLayout($this->context);

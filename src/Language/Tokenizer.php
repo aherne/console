@@ -2,6 +2,9 @@
 
 namespace Lucinda\Console\Language;
 
+/**
+ * Splits console markup source into positioned text and tag tokens.
+ */
 final class Tokenizer
 {
     private int $offset = 0;
@@ -9,13 +12,22 @@ final class Tokenizer
     private int $column = 1;
     private int $length;
 
+    /**
+     * Creates a tokenizer for a source string.
+     *
+     * @param string $source
+     * @return void
+     */
     public function __construct(private readonly string $source)
     {
         $this->length = strlen($source);
     }
 
     /**
+     * Reads the full source and returns all tokens in order.
+     *
      * @return Token[]
+     * @throws \Lucinda\Console\Language\ParseException
      */
     public function tokenize(): array
     {
@@ -32,6 +44,12 @@ final class Tokenizer
         return $tokens;
     }
 
+    /**
+     * Skips an HTML-style comment.
+     *
+     * @return void
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function consumeComment(): void
     {
         $position = $this->position();
@@ -42,6 +60,11 @@ final class Tokenizer
         $this->advance(substr($this->source, $this->offset, $end+3-$this->offset));
     }
 
+    /**
+     * Reads text up to the next tag opening.
+     *
+     * @return Token
+     */
     private function consumeText(): Token
     {
         $position = $this->position();
@@ -60,6 +83,12 @@ final class Tokenizer
         );
     }
 
+    /**
+     * Reads an opening, closing, or self-closing tag token.
+     *
+     * @return Token
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function consumeTag(): Token
     {
         $position = $this->position();
@@ -97,6 +126,13 @@ final class Tokenizer
         );
     }
 
+    /**
+     * Reads a tag or attribute name from the current offset.
+     *
+     * @param SourcePosition $position
+     * @return string
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function consumeName(SourcePosition $position): string
     {
         $start = $this->offset;
@@ -109,6 +145,14 @@ final class Tokenizer
         return substr($this->source, $start, $this->offset-$start);
     }
 
+    /**
+     * Requires a literal sequence at the current offset.
+     *
+     * @param string $value
+     * @param SourcePosition $position
+     * @return void
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function expect(string $value, SourcePosition $position): void
     {
         if (!$this->startsWith($value)) {
@@ -117,6 +161,11 @@ final class Tokenizer
         $this->advance($value);
     }
 
+    /**
+     * Advances over whitespace characters.
+     *
+     * @return void
+     */
     private function skipWhitespace(): void
     {
         while (!$this->isAtEnd() && preg_match('/\s/', $this->peek()) === 1) {
@@ -124,16 +173,33 @@ final class Tokenizer
         }
     }
 
+    /**
+     * Checks whether the remaining source starts with the given sequence.
+     *
+     * @param string $value
+     * @return bool
+     */
     private function startsWith(string $value): bool
     {
         return substr($this->source, $this->offset, strlen($value)) === $value;
     }
 
+    /**
+     * Returns the current source byte or an empty string at end of input.
+     *
+     * @return string
+     */
     private function peek(): string
     {
         return $this->source[$this->offset] ?? "";
     }
 
+    /**
+     * Moves the cursor forward and updates line and column counters.
+     *
+     * @param string $value
+     * @return void
+     */
     private function advance(string $value): void
     {
         $length = strlen($value);
@@ -148,16 +214,33 @@ final class Tokenizer
         $this->offset += $length;
     }
 
+    /**
+     * Reports whether all source bytes have been consumed.
+     *
+     * @return bool
+     */
     private function isAtEnd(): bool
     {
         return $this->offset >= $this->length;
     }
 
+    /**
+     * Captures the current source position.
+     *
+     * @return SourcePosition
+     */
     private function position(): SourcePosition
     {
         return new SourcePosition($this->line, $this->column);
     }
 
+    /**
+     * Reads attributes until the tag closes.
+     *
+     * @param array<string,string|bool> $attributes
+     * @return bool
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function traverse(array &$attributes): bool
     {
         while (!$this->isAtEnd()) {

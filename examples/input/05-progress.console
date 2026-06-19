@@ -1,0 +1,5 @@
+<view>
+    <h2>Job Status</h2>
+    <progress value="42" max="100" width="38" label="42% complete"/>
+    <spinner frame="⠹" label="Importing records"/>
+</view>

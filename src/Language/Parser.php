@@ -2,14 +2,30 @@
 
 namespace Lucinda\Console\Language;
 
+/**
+ * Converts console markup text into a validated document tree.
+ */
 final class Parser
 {
     private const VOID_ELEMENTS = ["br", "hr", "spacer", "progress"];
 
+    /**
+     * Creates a parser with the validator used after token parsing.
+     *
+     * @param Validator $validator
+     * @return void
+     */
     public function __construct(private readonly Validator $validator = new Validator())
     {
     }
 
+    /**
+     * Parses markup into a document, enforcing size and node-count limits.
+     *
+     * @param string $source
+     * @return DocumentNode
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     public function parse(string $source): DocumentNode
     {
         if (strlen($source) > 1024*1024) {
@@ -38,6 +54,14 @@ final class Parser
         return $document;
     }
 
+    /**
+     * Applies a token to the current open-element stack.
+     *
+     * @param array<int,DocumentNode|ElementNode> $stack
+     * @param Token $token
+     * @return void
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function parseToken(Token $token, array &$stack): void
     {
         $parent = $stack[array_key_last($stack)];

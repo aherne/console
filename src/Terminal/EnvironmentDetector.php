@@ -4,15 +4,28 @@ namespace Lucinda\Console\Terminal;
 
 use Lucinda\Console\Terminal\EnvironmentDetector\Results;
 
+/**
+ * Detects terminal dimensions, color depth, unicode support, hyperlinks, and interactivity.
+ */
 final class EnvironmentDetector
 {
     private Results $results;
 
+    /**
+     * Detects the environment immediately.
+     *
+     * @return void
+     */
     public function __construct()
     {
         $this->setResults();
     }
 
+    /**
+     * Populates the environment results from process and terminal state.
+     *
+     * @return void
+     */
     private function setResults(): void
     {
         $interactive = defined("STDOUT") && (
@@ -40,17 +53,34 @@ final class EnvironmentDetector
         $this->results = $results;
     }
 
+    /**
+     * Returns the detected environment results.
+     *
+     * @return Results
+     */
     public function getResults(): Results
     {
         return $this->results;
     }
 
+    /**
+     * Reads a positive integer terminal dimension from the environment.
+     *
+     * @param string $variable
+     * @param int $default
+     * @return int
+     */
     private function detectDimension(string $variable, int $default): int
     {
         $value = filter_var(getenv($variable), FILTER_VALIDATE_INT);
         return is_int($value) && $value > 0 ? $value : $default;
     }
 
+    /**
+     * Detects whether the terminal likely supports OSC 8 hyperlinks.
+     *
+     * @return bool
+     */
     private function detectHyperlinks(): bool
     {
         return getenv("WT_SESSION") !== false

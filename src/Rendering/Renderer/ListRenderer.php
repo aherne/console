@@ -7,6 +7,9 @@ use Lucinda\Console\Language\Node;
 use Lucinda\Console\Rendering\Renderer\Utilities\ContextAware;
 use Lucinda\Console\Styling\Style;
 
+/**
+ * Renders ordered and unordered lists, including nested lists.
+ */
 final class ListRenderer extends ContextAware
 {
     private const CORRESPONDENCES = [
@@ -14,6 +17,15 @@ final class ListRenderer extends ContextAware
         50 => "l", 40 => "xl", 10 => "x", 9 => "ix", 5 => "v", 4 => "iv", 1 => "i"
         ];
 
+    /**
+     * Renders a list element with markers and nested list indentation.
+     *
+     * @return string[]
+     * @param ElementNode $list
+     * @param int $width
+     * @param int $depth
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     public function render(ElementNode $list, int $width, int $depth = 0): array
     {
         $lines = [];
@@ -44,6 +56,13 @@ final class ListRenderer extends ContextAware
         return $lines;
     }
 
+    /**
+     * Resolves the marker string for a list item.
+     *
+     * @param ElementNode $list
+     * @param int $number
+     * @return string
+     */
     private function listMarker(ElementNode $list, int $number): string
     {
         $marker = (string) $list->getAttribute("marker", $list->getName() === "ol" ? "decimal" : "bullet");
@@ -58,6 +77,12 @@ final class ListRenderer extends ContextAware
         };
     }
 
+    /**
+     * Converts a positive integer to a lowercase roman numeral.
+     *
+     * @param int $number
+     * @return string
+     */
     private function roman(int $number): string
     {
         $output = "";

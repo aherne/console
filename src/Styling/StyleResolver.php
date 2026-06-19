@@ -5,6 +5,9 @@ namespace Lucinda\Console\Styling;
 use Lucinda\Console\Language\ElementNode;
 use Lucinda\Console\Language\ParseException;
 
+/**
+ * Resolves inherited, theme, class, attribute, and inline styles for elements.
+ */
 final class StyleResolver
 {
     private const BOOLEAN_PROPERTIES = [
@@ -20,11 +23,25 @@ final class StyleResolver
 
     private Theme $theme;
 
+    /**
+     * Creates a resolver backed by the given theme.
+     *
+     * @param Theme $theme
+     * @return void
+     */
     public function __construct(Theme $theme)
     {
         $this->theme = $theme;
     }
 
+    /**
+     * Resolves the final style for an element.
+     *
+     * @param ElementNode $element
+     * @param ?Style $inherited
+     * @return Style
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     public function resolve(ElementNode $element, ?Style $inherited = null): Style
     {
         $style = $inherited ?? new Style();
@@ -40,6 +57,13 @@ final class StyleResolver
         return $style->merge(new Style($this->getProperties($element)));
     }
 
+    /**
+     * Extracts style properties declared directly on an element.
+     *
+     * @return array<string,int|string|bool|null>
+     * @param ElementNode $element
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     private function getProperties(ElementNode $element): array
     {
         $properties = [];

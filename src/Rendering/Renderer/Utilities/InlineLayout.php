@@ -8,9 +8,19 @@ use Lucinda\Console\Language\TextNode;
 use Lucinda\Console\Rendering\InlineSegment;
 use Lucinda\Console\Styling\Style;
 
+/**
+ * Low-level inline text collection, wrapping, segment merging, and painting utilities.
+ */
 final class InlineLayout extends ContextAware
 {
-    /** @param InlineSegment[] $segments */
+    /**
+     * Renders segments as one clipped or ellipsized line.
+     *
+     * @param InlineSegment[] $segments
+     * @param int $width
+     * @param string $overflow
+     * @return string
+     */
     public function renderSingleLine(array $segments, int $width, string $overflow): string
     {
         $limit = $overflow === "ellipsis" ? max(0, $width-1) : $width;
@@ -34,7 +44,14 @@ final class InlineLayout extends ContextAware
         return $this->paintSegments($result);
     }
 
-    /** @param InlineSegment[] $segments @return string[] */
+    /**
+     * Wraps segments by display character width.
+     *
+     * @param InlineSegment[] $segments
+     *
+     * @return string[]
+     * @param int $width
+     */
     public function renderCharacterWrapped(array $segments, int $width): array
     {
         $lines = [[]];
@@ -58,7 +75,12 @@ final class InlineLayout extends ContextAware
         return array_map(fn (array $line): string => rtrim($this->paintSegments($line)), $lines);
     }
 
-    /** @param InlineSegment[] $segments */
+    /**
+     * Paints already-laid-out inline segments into terminal text.
+     *
+     * @param InlineSegment[] $segments
+     * @return string
+     */
     public function paintSegments(array $segments): string
     {
         $output = "";
@@ -81,8 +103,15 @@ final class InlineLayout extends ContextAware
     }
 
     /**
+     * Flattens inline nodes into styled text segments.
+     *
      * @param Node[]          $nodes
      * @param InlineSegment[] $segments
+     * @param Style $style
+     * @param ?string $href
+     * @param bool $preserveWhitespace
+     * @return void
+     * @throws \Lucinda\Console\Language\ParseException
      */
     public function collectSegments(array $nodes, Style $style, array &$segments, ?string $href, bool $preserveWhitespace): void
     {
@@ -112,7 +141,13 @@ final class InlineLayout extends ContextAware
         }
     }
 
-    /** @param InlineSegment[] $line */
+    /**
+     * Appends a segment to a line, merging adjacent compatible segments.
+     *
+     * @param InlineSegment[] $line
+     * @param InlineSegment $segment
+     * @return void
+     */
     public function appendSegment(array &$line, InlineSegment $segment): void
     {
         $last = array_key_last($line);
@@ -123,7 +158,13 @@ final class InlineLayout extends ContextAware
         }
     }
 
-    /** @return string[] */
+    /**
+     * Splits a string into chunks no wider than the requested display width.
+     *
+     * @return string[]
+     * @param string $value
+     * @param int $width
+     */
     public function splitToWidth(string $value, int $width): array
     {
         if ($this->context->getDisplayWidth()->get($value) <= $width) {

@@ -3,7 +3,7 @@
 namespace Lucinda\Console;
 
 /**
- * Defines a generic exception thrown when API encounters error of usage by developers
+ * Reports invalid console markup or unsupported API usage.
  */
 class Exception extends \Exception
 {

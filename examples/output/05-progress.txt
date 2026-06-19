@@ -1,0 +1,4 @@
+Job Status
+
+[██████████░░░░░░░░░░░░░] 42% complete
+⠹ Importing records

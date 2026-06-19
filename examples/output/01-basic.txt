@@ -1,0 +1,7 @@
+Deployment Report
+
+Application: Billing API
+Version: 2.4.1
+Deployment completed successfully.
+3 services restarted.
+1 worker is still draining old jobs.

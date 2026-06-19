@@ -8,8 +8,20 @@ use Lucinda\Console\Rendering\Renderer\Utilities\ContextAware;
 use Lucinda\Console\Rendering\Renderer\Utilities\TextLayout;
 use Lucinda\Console\Rendering\Renderer\Utilities\WidthResolver;
 
+/**
+ * Renders column containers by laying child columns side by side.
+ */
 final class ColumnsRenderer extends ContextAware
 {
+    /**
+     * Renders column children and aligns them into shared output rows.
+     *
+     * @return string[]
+     * @param ElementNode $element
+     * @param int $width
+     * @param NodesRenderer $nodesRenderer
+     * @throws \Lucinda\Console\Language\ParseException
+     */
     public function render(ElementNode $element, int $width, NodesRenderer $nodesRenderer): array
     {
         $widthResolver = new WidthResolver($this->context);
